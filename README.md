@@ -7,7 +7,8 @@ LockBox is an offline password manager designed to be a secure and user-friendly
 ```
 ├── presentations/            # Contains all project review presentations
 │   ├── Review_0.pdf
-│   └── Review_1.pdf
+│   |── Review_1.pdf
+|   |── Review_2.pdf
 ```
 
 ### Contributors
