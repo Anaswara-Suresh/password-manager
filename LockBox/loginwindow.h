@@ -7,6 +7,7 @@
 #include <QSqlError>
 #include <QMessageBox>
 #include <QByteArray>
+#include "autolockmanager.h"
 
 namespace Ui {
 class LoginWindow;
@@ -28,9 +29,11 @@ private slots:
     void onRegisterClicked();
     void onResetPasswordClicked();
     void onShowPasswordToggled(bool checked);
+    void handleAutoLock();
 
 private:
     Ui::LoginWindow *ui;
+    AutoLockManager *autoLockManager;
 
     QByteArray authenticateUser(const QString &username, const QString &password);
 

@@ -20,17 +20,19 @@ set(SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/crypto.cpp"
     "${CMAKE_SOURCE_DIR}/loginwindow.cpp"
     "${CMAKE_SOURCE_DIR}/passwordlist.cpp"
+    "${CMAKE_SOURCE_DIR}/autolockmanager.cpp"
 )
 
 # ---- Header files ----
 set(HEADER_FILES
-    "${CMAKE_SOURCE_DIR}/mainwindow.h"         
+    "${CMAKE_SOURCE_DIR}/mainwindow.h"
     "${CMAKE_SOURCE_DIR}/addpasswordpage.h"
     "${CMAKE_SOURCE_DIR}/database.h"
     "${CMAKE_SOURCE_DIR}/utils.h"
     "${CMAKE_SOURCE_DIR}/crypto.h"
     "${CMAKE_SOURCE_DIR}/loginwindow.h"
     "${CMAKE_SOURCE_DIR}/passwordlist.h"
+    "${CMAKE_SOURCE_DIR}/autolockmanager.h"
 )
 
 # ---- UI files ----

@@ -11,13 +11,14 @@
 #include <QRegularExpression>
 #include <QInputDialog>
 #include "mainwindow.h"
+#include "autolockmanager.h"
 
 LoginWindow::LoginWindow(QWidget *parent)
     : QMainWindow(parent),
-      ui(new Ui::LoginWindow)
+    ui(new Ui::LoginWindow),
+    autoLockManager(new AutoLockManager(this, 30000))  // 30s default
 {
     ui->setupUi(this);
-
     setWindowTitle("LockBox - Secure Login");
     setFixedSize(450, 550);
 
@@ -37,9 +38,15 @@ LoginWindow::LoginWindow(QWidget *parent)
     connect(ui->resetPasswordButton, &QPushButton::clicked, this, &LoginWindow::onResetPasswordClicked);
     connect(ui->showPasswordCheckBox, &QCheckBox::toggled, this, &LoginWindow::onShowPasswordToggled);
 
+    connect(autoLockManager, &AutoLockManager::timeout, this, &LoginWindow::handleAutoLock);
+
     ui->passwordLineEdit->setEchoMode(QLineEdit::Password);
     ui->usernameLineEdit->setFocus();
+
+    // Initially stop autolock on login page
+    autoLockManager->stop();
 }
+
 
 LoginWindow::~LoginWindow()
 {
@@ -231,10 +238,15 @@ void LoginWindow::onLoginClicked()
         MainWindow *mainWindow = new MainWindow(derivedKey);
         mainWindow->setAttribute(Qt::WA_DeleteOnClose);
         mainWindow->show();
+
+        // ✅ Restart auto-lock after login
+        autoLockManager->resetTimer();
+        autoLockManager->start();
     } else {
         QMessageBox::warning(this, "Login Failed", "Invalid username or password.\nPlease try again.");
     }
 }
+
 
 void LoginWindow::onRegisterClicked()
 {
@@ -267,3 +279,28 @@ void LoginWindow::onShowPasswordToggled(bool checked)
 {
     ui->passwordLineEdit->setEchoMode(checked ? QLineEdit::Normal : QLineEdit::Password);
 }
+
+void LoginWindow::handleAutoLock()
+{
+    qDebug() << "[AutoLock] Timeout triggered — returning to login screen.";
+
+    // Close all top-level windows except the login page
+    for (QWidget *w : QApplication::topLevelWidgets()) {
+        if (w != this)
+            w->close();
+    }
+
+    // Clear sensitive data
+    ui->passwordLineEdit->clear();
+
+    // Optionally clear username too
+    // ui->usernameLineEdit->clear();
+
+    this->show();
+    this->raise();
+    this->activateWindow();
+
+    // Stop autolock since we're on login page
+    autoLockManager->stop();
+}
+
