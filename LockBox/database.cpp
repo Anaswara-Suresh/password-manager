@@ -81,7 +81,6 @@ bool Database::deletePassword(int id)
     return query.exec();
 }
 
-// ✅ NEW: Allow access to current DB connection
 QSqlDatabase& Database::getDatabase()
 {
     return m_db;

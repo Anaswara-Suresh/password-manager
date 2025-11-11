@@ -18,12 +18,12 @@ public:
 
 private slots:
     void loadPasswords();
-    void onEditButtonClicked();    // ✅ no int param — uses sender()->property("entryId")
-    void onDeleteButtonClicked();  // ✅ same
+    void onEditButtonClicked();    
+    void onDeleteButtonClicked();  
     void refreshTable();
 
 private:
     Ui::PasswordList *ui;
 };
 
-#endif // PASSWORDLIST_H
+#endif 

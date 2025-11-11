@@ -18,8 +18,8 @@ public:
     static bool updatePassword(int id, const QByteArray &site, const QByteArray &user, const QByteArray &pass);
     static bool deletePassword(int id);
 
-    // ✅ NEW: Accessor for the active connection
+   
     static QSqlDatabase& getDatabase();
 };
 
-#endif // DATABASE_H
+#endif 
