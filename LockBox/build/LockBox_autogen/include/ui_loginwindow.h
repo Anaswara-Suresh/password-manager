@@ -29,8 +29,6 @@ public:
     QLabel *titleLabel;
     QLabel *usernameLabel;
     QLineEdit *usernameLineEdit;
-    QLabel *emailLabel;
-    QLineEdit *emailLineEdit;
     QLabel *passwordLabel;
     QLineEdit *passwordLineEdit;
     QCheckBox *showPasswordCheckBox;
@@ -45,7 +43,7 @@ public:
     {
         if (LoginWindow->objectName().isEmpty())
             LoginWindow->setObjectName("LoginWindow");
-        LoginWindow->resize(480, 640);
+        LoginWindow->resize(480, 600);
         centralwidget = new QWidget(LoginWindow);
         centralwidget->setObjectName("centralwidget");
         titleLabel = new QLabel(centralwidget);
@@ -62,34 +60,28 @@ public:
         usernameLineEdit = new QLineEdit(centralwidget);
         usernameLineEdit->setObjectName("usernameLineEdit");
         usernameLineEdit->setGeometry(QRect(180, 135, 200, 30));
-        emailLabel = new QLabel(centralwidget);
-        emailLabel->setObjectName("emailLabel");
-        emailLabel->setGeometry(QRect(80, 190, 101, 20));
-        emailLineEdit = new QLineEdit(centralwidget);
-        emailLineEdit->setObjectName("emailLineEdit");
-        emailLineEdit->setGeometry(QRect(180, 185, 200, 30));
         passwordLabel = new QLabel(centralwidget);
         passwordLabel->setObjectName("passwordLabel");
-        passwordLabel->setGeometry(QRect(80, 240, 101, 20));
+        passwordLabel->setGeometry(QRect(80, 190, 101, 20));
         passwordLineEdit = new QLineEdit(centralwidget);
         passwordLineEdit->setObjectName("passwordLineEdit");
-        passwordLineEdit->setGeometry(QRect(180, 235, 200, 30));
+        passwordLineEdit->setGeometry(QRect(180, 185, 200, 30));
         passwordLineEdit->setEchoMode(QLineEdit::Password);
         showPasswordCheckBox = new QCheckBox(centralwidget);
         showPasswordCheckBox->setObjectName("showPasswordCheckBox");
-        showPasswordCheckBox->setGeometry(QRect(180, 275, 141, 20));
+        showPasswordCheckBox->setGeometry(QRect(180, 225, 141, 20));
         loginButton = new QPushButton(centralwidget);
         loginButton->setObjectName("loginButton");
-        loginButton->setGeometry(QRect(180, 320, 200, 30));
+        loginButton->setGeometry(QRect(180, 270, 200, 30));
         registerButton = new QPushButton(centralwidget);
         registerButton->setObjectName("registerButton");
-        registerButton->setGeometry(QRect(180, 370, 200, 30));
+        registerButton->setGeometry(QRect(180, 320, 200, 30));
         resetPasswordButton = new QPushButton(centralwidget);
         resetPasswordButton->setObjectName("resetPasswordButton");
-        resetPasswordButton->setGeometry(QRect(180, 420, 200, 30));
+        resetPasswordButton->setGeometry(QRect(180, 370, 200, 30));
         statusLabel = new QLabel(centralwidget);
         statusLabel->setObjectName("statusLabel");
-        statusLabel->setGeometry(QRect(80, 480, 320, 40));
+        statusLabel->setGeometry(QRect(80, 440, 320, 40));
         statusLabel->setAlignment(Qt::AlignCenter);
         LoginWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(LoginWindow);
@@ -110,7 +102,6 @@ public:
         LoginWindow->setWindowTitle(QCoreApplication::translate("LoginWindow", "LockBox - Login", nullptr));
         titleLabel->setText(QCoreApplication::translate("LoginWindow", "Welcome to LockBox", nullptr));
         usernameLabel->setText(QCoreApplication::translate("LoginWindow", "Username:", nullptr));
-        emailLabel->setText(QCoreApplication::translate("LoginWindow", "Email:", nullptr));
         passwordLabel->setText(QCoreApplication::translate("LoginWindow", "Password:", nullptr));
         showPasswordCheckBox->setText(QCoreApplication::translate("LoginWindow", "Show Password", nullptr));
         loginButton->setText(QCoreApplication::translate("LoginWindow", "Login", nullptr));
