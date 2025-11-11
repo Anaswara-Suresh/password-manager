@@ -7,17 +7,18 @@
 
 namespace Crypto {
 
-// ===== Initialization =====
+
 bool initialize();
 
-// ===== Encryption for vault data =====
-QByteArray encrypt(const QString &plaintext);
-QString decrypt(const QByteArray &ciphertext_with_nonce);
+QByteArray deriveKey(const QString &masterPassword, const QByteArray &salt);
 
-// ===== Password hashing for login system =====
-QByteArray hashPassword(const QString &password);
-bool verifyPassword(const QString &password, const QByteArray &storedHash);
+QByteArray registerNewUser(const QString &masterPassword, QByteArray &outSalt, QByteArray &outVerificationCiphertext);
+
+QByteArray encrypt(const QString &plaintext, const QByteArray &derivedKey);
+QString decrypt(const QByteArray &ciphertext_with_nonce, const QByteArray &derivedKey);
+
+bool verifyMasterPassword(const QString &masterPassword, const QByteArray &storedSalt, const QByteArray &storedCiphertext);
 
 }
 
-#endif // CRYPTO_H
+#endif

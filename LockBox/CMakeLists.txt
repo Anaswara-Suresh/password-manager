@@ -43,22 +43,17 @@ qt_add_executable(LockBox
     ${UI_FILES}
 )
 
-# ---- macOS libsodium ----
-if(APPLE)
-    execute_process(
-        COMMAND brew --prefix libsodium
-        OUTPUT_VARIABLE SODIUM_PREFIX
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
+# ---- Windows libsodium ----
+if(WIN32)
+    set(SODIUM_ROOT "C:/libsodium/libsodium-win64")
+    set(SODIUM_INCLUDE_DIR "${SODIUM_ROOT}/include")
+    set(SODIUM_LIB_DIR "${SODIUM_ROOT}/lib")
 
-    if (EXISTS "${SODIUM_PREFIX}/lib/libsodium.dylib")
-        message(STATUS "✅ Linking libsodium from ${SODIUM_PREFIX}")
-        target_include_directories(LockBox PRIVATE ${SODIUM_PREFIX}/include)
-        target_link_directories(LockBox PRIVATE ${SODIUM_PREFIX}/lib)
-        target_link_libraries(LockBox PRIVATE sodium)
-    else()
-        message(FATAL_ERROR "❌ libsodium not found. Please install it via: brew install libsodium")
-    endif()
+    message(STATUS " Linking libsodium from ${SODIUM_ROOT}")
+
+    target_include_directories(LockBox PRIVATE ${SODIUM_INCLUDE_DIR})
+    target_link_directories(LockBox PRIVATE ${SODIUM_LIB_DIR})
+    target_link_libraries(LockBox PRIVATE libsodium)
 endif()
 
 # ---- Include paths ----
@@ -66,11 +61,10 @@ target_include_directories(LockBox PRIVATE
     "${CMAKE_SOURCE_DIR}"
 )
 
-# ---- Link Qt + Sodium ----
+# ---- Link Qt libraries ----
 target_link_libraries(LockBox PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Sql
-    sodium
 )
 
 set_target_properties(LockBox PROPERTIES

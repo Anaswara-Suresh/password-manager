@@ -4,40 +4,73 @@
 #include <QString>
 #include <sodium.h>
 
-// Hardcoded 32-byte key. MUST be exactly 32 characters long.
-// In a production app, this key MUST be derived from the user's master password.
-static const unsigned char ENCRYPTION_KEY[crypto_aead_xchacha20poly1305_IETF_KEYBYTES] =
-    "A-Very-Secret-Key-1234567890123"; // 32 characters
+
+static const size_t ENCRYPTION_KEY_SIZE = crypto_aead_xchacha20poly1305_IETF_KEYBYTES;
+
+static const size_t KEY_DERIVATION_SALT_SIZE = crypto_pwhash_SALTBYTES;
+
+static const QString VERIFICATION_PHRASE = "MASTER_PASSWORD_VERIFIED";
+
+
 
 bool Crypto::initialize() {
     if (sodium_init() == -1) {
-        qCritical() << "Libsodium initialization failed!";
+        qCritical() << "Libsodium initialization failed! Fatal error.";
         return false;
     }
     return true;
 }
 
-// ================= ENCRYPTION =================
+// ================= KEY DERIVATION =================
 
-QByteArray Crypto::encrypt(const QString &plaintext) {
+QByteArray Crypto::deriveKey(const QString &masterPassword, const QByteArray &salt) {
+    if (salt.size() != KEY_DERIVATION_SALT_SIZE) {
+        qCritical() << "Key derivation failed: Invalid salt size.";
+        return QByteArray();
+    }
+
+    QByteArray password_bytes = masterPassword.toUtf8();
+    QByteArray derivedKey(ENCRYPTION_KEY_SIZE, 0);
+
+
+    int result = crypto_pwhash(
+        reinterpret_cast<unsigned char*>(derivedKey.data()), derivedKey.size(),
+        password_bytes.constData(), password_bytes.size(),
+        reinterpret_cast<const unsigned char*>(salt.constData()),
+        crypto_pwhash_OPSLIMIT_MODERATE,
+        crypto_pwhash_MEMLIMIT_MODERATE,
+        crypto_pwhash_ALG_DEFAULT
+        );
+
+    if (result != 0) {
+        qCritical() << "Argon2 Key derivation failed!";
+        return QByteArray();
+    }
+    return derivedKey;
+}
+
+// ================= ENCRYPTION / DECRYPTION =================
+
+QByteArray Crypto::encrypt(const QString &plaintext, const QByteArray &derivedKey) {
+    if (derivedKey.size() != ENCRYPTION_KEY_SIZE) {
+        qCritical() << "Encryption failed: Invalid derived key size.";
+        return QByteArray();
+    }
+
     QByteArray plaintext_bytes = plaintext.toUtf8();
 
-    // Allocate space for Nonce + Ciphertext + Authentication Tag
     QByteArray output_bytes(
         crypto_aead_xchacha20poly1305_IETF_NPUBBYTES +
-        plaintext_bytes.size() +
-        crypto_aead_xchacha20poly1305_IETF_ABYTES,
+            plaintext_bytes.size() +
+            crypto_aead_xchacha20poly1305_IETF_ABYTES,
         0
-    );
+        );
 
-    // Generate Nonce
     unsigned char nonce[crypto_aead_xchacha20poly1305_IETF_NPUBBYTES];
     randombytes_buf(nonce, sizeof(nonce));
 
-    // Copy Nonce to start of output
     memcpy(output_bytes.data(), nonce, sizeof(nonce));
 
-    // Encrypt
     unsigned long long ciphertext_len;
     int result = crypto_aead_xchacha20poly1305_ietf_encrypt(
         reinterpret_cast<unsigned char*>(output_bytes.data()) + crypto_aead_xchacha20poly1305_IETF_NPUBBYTES,
@@ -47,11 +80,11 @@ QByteArray Crypto::encrypt(const QString &plaintext) {
         nullptr, 0,
         nullptr,
         nonce,
-        ENCRYPTION_KEY
-    );
+        reinterpret_cast<const unsigned char*>(derivedKey.constData())
+        );
 
     if (result != 0) {
-        qCritical() << "Encryption failed!";
+        qCritical() << "XChaCha20-Poly1305 Encryption failed!";
         return QByteArray();
     }
 
@@ -59,7 +92,12 @@ QByteArray Crypto::encrypt(const QString &plaintext) {
     return output_bytes;
 }
 
-QString Crypto::decrypt(const QByteArray &ciphertext_with_nonce) {
+QString Crypto::decrypt(const QByteArray &ciphertext_with_nonce, const QByteArray &derivedKey) {
+    if (derivedKey.size() != ENCRYPTION_KEY_SIZE) {
+        qCritical() << "Decryption failed: Invalid derived key size.";
+        return QString();
+    }
+
     if (ciphertext_with_nonce.size() < crypto_aead_xchacha20poly1305_IETF_NPUBBYTES + crypto_aead_xchacha20poly1305_IETF_ABYTES) {
         qCritical() << "Ciphertext too short to contain nonce and tag!";
         return QString();
@@ -68,6 +106,7 @@ QString Crypto::decrypt(const QByteArray &ciphertext_with_nonce) {
     const unsigned char* nonce = reinterpret_cast<const unsigned char*>(ciphertext_with_nonce.constData());
     const unsigned char* ciphertext = reinterpret_cast<const unsigned char*>(ciphertext_with_nonce.constData()) + crypto_aead_xchacha20poly1305_IETF_NPUBBYTES;
     int ciphertext_len = ciphertext_with_nonce.size() - crypto_aead_xchacha20poly1305_IETF_NPUBBYTES;
+
 
     QByteArray plaintext_bytes(ciphertext_len, 0);
 
@@ -80,11 +119,11 @@ QString Crypto::decrypt(const QByteArray &ciphertext_with_nonce) {
         ciphertext_len,
         nullptr, 0,
         nonce,
-        ENCRYPTION_KEY
-    );
+        reinterpret_cast<const unsigned char*>(derivedKey.constData())
+        );
 
     if (result != 0) {
-        qCritical() << "Decryption failed! Data may be tampered with or key is wrong.";
+        qWarning() << "Decryption failed! Wrong key or data was tampered with.";
         return QString();
     }
 
@@ -92,36 +131,37 @@ QString Crypto::decrypt(const QByteArray &ciphertext_with_nonce) {
     return QString::fromUtf8(plaintext_bytes);
 }
 
-// ================= PASSWORD HASHING =================
+// ================= MASTER PASSWORD VERIFICATION =================
 
-QByteArray Crypto::hashPassword(const QString &password) {
-    QByteArray password_bytes = password.toUtf8();
-    QByteArray hash(crypto_pwhash_STRBYTES, 0);
+QByteArray Crypto::registerNewUser(const QString &masterPassword, QByteArray &outSalt, QByteArray &outVerificationCiphertext) {
 
-    int result = crypto_pwhash_str(
-        hash.data(),
-        password_bytes.constData(),
-        static_cast<unsigned long long>(password_bytes.size()),
-        crypto_pwhash_OPSLIMIT_INTERACTIVE,
-        crypto_pwhash_MEMLIMIT_INTERACTIVE
-    );
+    outSalt.resize(KEY_DERIVATION_SALT_SIZE);
+    randombytes_buf(outSalt.data(), outSalt.size());
 
-    if (result != 0) {
-        qCritical() << "Password hashing failed!";
+
+    QByteArray derivedKey = deriveKey(masterPassword, outSalt);
+    if (derivedKey.isEmpty()) {
         return QByteArray();
     }
 
-    return hash;
+
+    outVerificationCiphertext = encrypt(VERIFICATION_PHRASE, derivedKey);
+    if (outVerificationCiphertext.isEmpty()) {
+        qCritical() << "Failed to encrypt verification phrase.";
+        return QByteArray();
+    }
+
+    return derivedKey;
 }
 
-bool Crypto::verifyPassword(const QString &password, const QByteArray &storedHash) {
-    QByteArray password_bytes = password.toUtf8();
+bool Crypto::verifyMasterPassword(const QString &masterPassword, const QByteArray &storedSalt, const QByteArray &storedCiphertext) {
 
-    int result = crypto_pwhash_str_verify(
-        storedHash.constData(),
-        password_bytes.constData(),
-        static_cast<unsigned long long>(password_bytes.size())
-    );
+    QByteArray derivedKey = deriveKey(masterPassword, storedSalt);
+    if (derivedKey.isEmpty()) {
+        return false;
+    }
 
-    return result == 0; // 0 means match
+    QString decryptedPhrase = decrypt(storedCiphertext, derivedKey);
+
+    return decryptedPhrase == VERIFICATION_PHRASE;
 }

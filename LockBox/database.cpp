@@ -24,7 +24,7 @@ bool Database::initialize() {
 
     QSqlQuery query(m_db);
 
-    // ---- Create passwords table ----
+
     QString createPasswords = R"(
         CREATE TABLE IF NOT EXISTS passwords (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,13 +39,14 @@ bool Database::initialize() {
         return false;
     }
 
-    // ---- Create users table ----
+
     QString createUsers = R"(
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
             email TEXT NOT NULL,
-            password_hash BLOB NOT NULL,
+            salt BLOB NOT NULL,
+            verification_ciphertext BLOB NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_login TIMESTAMP
         )
@@ -56,11 +57,11 @@ bool Database::initialize() {
         return false;
     }
 
-    qDebug() << "✅ Database initialized successfully (users + passwords tables ready)";
+    qDebug() << "Database initialized successfully (users + passwords tables ready)";
     return true;
 }
 
-// ---- Add encrypted password entries ----
+
 bool Database::addPassword(const QByteArray &site_ciphertext,
                            const QByteArray &username_ciphertext,
                            const QByteArray &password_ciphertext)

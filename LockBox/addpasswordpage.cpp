@@ -8,12 +8,17 @@
 #include <QByteArray>
 
 
-AddPasswordPage::AddPasswordPage(QWidget *parent)
+
+AddPasswordPage::AddPasswordPage(QWidget *parent, const QByteArray& derivedKey)
     : QMainWindow(parent)
     , ui(new Ui::addpasswordpage)
+    , m_derivedKey(derivedKey)
 {
     ui->setupUi(this);
+    if (m_derivedKey.isEmpty()) {
+        qCritical() << "AddPasswordPage started without a valid encryption key!";
 
+    }
 }
 
 
@@ -47,6 +52,11 @@ void AddPasswordPage::on_analyzeButton_clicked()
 void AddPasswordPage::on_addButton_clicked()
 {
 
+    if (m_derivedKey.isEmpty()) {
+        QMessageBox::critical(this, "Security Error", "Cannot save: Encryption key is missing. Please log in again.");
+        return;
+    }
+
     QString site_plaintext = ui->siteEdit->text();
     QString username_plaintext = ui->usernameEdit->text();
     QString password_plaintext = ui->passwordEdit->text();
@@ -57,22 +67,21 @@ void AddPasswordPage::on_addButton_clicked()
     }
 
 
-    QByteArray site_ciphertext = Crypto::encrypt(site_plaintext);
-    QByteArray username_ciphertext = Crypto::encrypt(username_plaintext);
-    QByteArray password_ciphertext = Crypto::encrypt(password_plaintext);
+    QByteArray site_ciphertext = Crypto::encrypt(site_plaintext, m_derivedKey);
+    QByteArray username_ciphertext = Crypto::encrypt(username_plaintext, m_derivedKey);
+    QByteArray password_ciphertext = Crypto::encrypt(password_plaintext, m_derivedKey);
 
 
     if (site_ciphertext.isEmpty() || username_ciphertext.isEmpty() || password_ciphertext.isEmpty()) {
         QMessageBox::critical(this, "Encryption Error", "Password was NOT encrypted (Ciphertext is empty). Saving aborted.");
-        qDebug() << "ERROR: One or more encryption fields failed. Check libsodium linking.";
+        qDebug() << "ERROR: Encryption failed. Check derived key validity.";
         return;
     }
     qDebug() << "Ciphertext Data (HEX - Site):" << site_ciphertext.toHex();
 
 
-
     if (Database::addPassword(site_ciphertext, username_ciphertext, password_ciphertext)) {
-        QMessageBox::information(this, "Success", "All fields saved successfully (as encrypted BLOBs)!");
+        QMessageBox::information(this, "Success", "All fields saved successfully (using derived key)!");
 
 
     } else {

@@ -6,7 +6,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QMessageBox>
-
+#include <QByteArray>
 namespace Ui {
 class LoginWindow;
 }
@@ -30,12 +30,11 @@ private slots:
 
 private:
     Ui::LoginWindow *ui;
-    QSqlDatabase db;
-    QString currentUsername;
 
-    bool initializeDatabase();
-    bool authenticateUser(const QString &username, const QString &password);
+    QByteArray authenticateUser(const QString &username, const QString &password);
+
     bool registerUser(const QString &username, const QString &password, const QString &email);
+
     bool resetPassword(const QString &username, const QString &email, const QString &newPassword);
 
     bool validateUsername(const QString &username);
@@ -43,4 +42,4 @@ private:
     bool validateEmail(const QString &email);
 };
 
-#endif // LOGINWINDOW_H
+#endif

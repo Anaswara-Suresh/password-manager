@@ -10,13 +10,12 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    // Initialize cryptography library
+
     if (!Crypto::initialize()) {
         qCritical() << "FATAL: Could not initialize cryptography library. Exiting.";
         return 1;
     }
 
-    // Load stylesheet
     QFile styleFile("style.qss");
     if (styleFile.open(QFile::ReadOnly)) {
         QString style = QLatin1String(styleFile.readAll());
@@ -26,13 +25,13 @@ int main(int argc, char *argv[])
         qWarning() << "Could not open style.qss";
     }
 
-    // Initialize database
+
     if (!Database::initialize()) {
         qCritical() << "FATAL: Could not initialize database. Exiting.";
         return 1;
     }
 
-    // Show login window first
+
     LoginWindow loginWindow;
     loginWindow.show();
 
