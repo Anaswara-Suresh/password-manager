@@ -24,14 +24,14 @@ bool Database::initialize() {
 
     // --- Create passwords table ---
     QString createPasswords = R"(
-        CREATE TABLE IF NOT EXISTS passwords (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            site BLOB NOT NULL,
-            username BLOB NOT NULL,
-            password BLOB NOT NULL
-        )
-    )";
-
+    CREATE TABLE IF NOT EXISTS passwords (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        site BLOB NOT NULL,
+        username BLOB NOT NULL,
+        password BLOB NOT NULL,
+        entry_hash BLOB UNIQUE NOT NULL
+    )
+)";
     if (!query.exec(createPasswords)) {
         qDebug() << "Failed to create passwords table:" << query.lastError().text();
         return false;
@@ -60,22 +60,31 @@ bool Database::initialize() {
 
 bool Database::addPassword(const QByteArray &site_ciphertext,
                            const QByteArray &username_ciphertext,
-                           const QByteArray &password_ciphertext)
+                           const QByteArray &password_ciphertext,
+                           const QByteArray &entryHash)
 {
     QSqlQuery query(m_db);
-    query.prepare("INSERT INTO passwords (site, username, password) VALUES (?, ?, ?)");
+    query.prepare("INSERT INTO passwords (site, username, password, entry_hash) VALUES (?, ?, ?, ?)");
     query.addBindValue(site_ciphertext);
     query.addBindValue(username_ciphertext);
     query.addBindValue(password_ciphertext);
+    query.addBindValue(entryHash);
 
     if (!query.exec()) {
-        qDebug() << "Insert failed:" << query.lastError().text();
+        QString err = query.lastError().text();
+        qDebug() << "Insert failed:" << err;
+
+        if (err.contains("UNIQUE constraint failed")) {
+            // Duplicate found — return false gracefully
+            return false;
+        }
         return false;
     }
 
     qDebug() << "Database successfully inserted one encrypted password row.";
     return true;
 }
+
 
 QList<QList<QVariant>> Database::fetchAllPasswords() {
     QList<QList<QVariant>> results;

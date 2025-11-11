@@ -12,14 +12,15 @@ private:
 
 public:
     static bool initialize();
-    static bool addPassword(const QByteArray &site, const QByteArray &username, const QByteArray &password);
+    static bool addPassword(const QByteArray &site, const QByteArray &username, const QByteArray &password, const QByteArray &entryHash);
+
     static QList<QList<QVariant>> fetchAllPasswords();
 
     static bool updatePassword(int id, const QByteArray &site, const QByteArray &user, const QByteArray &pass);
     static bool deletePassword(int id);
 
-   
+
     static QSqlDatabase& getDatabase();
 };
 
-#endif 
+#endif

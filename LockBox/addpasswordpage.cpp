@@ -51,9 +51,9 @@ void AddPasswordPage::on_analyzeButton_clicked()
 
 void AddPasswordPage::on_addButton_clicked()
 {
-
     if (m_derivedKey.isEmpty()) {
-        QMessageBox::critical(this, "Security Error", "Cannot save: Encryption key is missing. Please log in again.");
+        QMessageBox::critical(this, "Security Error",
+                              "Cannot save: Encryption key is missing. Please log in again.");
         return;
     }
 
@@ -66,25 +66,36 @@ void AddPasswordPage::on_addButton_clicked()
         return;
     }
 
+    // === Generate unique hash for duplicate checking ===
+    QString combined = site_plaintext + ":" + username_plaintext;
+    QByteArray combinedBytes = combined.toUtf8();
 
+    QByteArray entryHash(crypto_generichash_BYTES, 0);
+    crypto_generichash(reinterpret_cast<unsigned char*>(entryHash.data()),
+                       entryHash.size(),
+                       reinterpret_cast<const unsigned char*>(combinedBytes.constData()),
+                       combinedBytes.size(),
+                       nullptr, 0);
+
+    // === Encrypt data ===
     QByteArray site_ciphertext = Crypto::encrypt(site_plaintext, m_derivedKey);
     QByteArray username_ciphertext = Crypto::encrypt(username_plaintext, m_derivedKey);
     QByteArray password_ciphertext = Crypto::encrypt(password_plaintext, m_derivedKey);
 
-
     if (site_ciphertext.isEmpty() || username_ciphertext.isEmpty() || password_ciphertext.isEmpty()) {
-        QMessageBox::critical(this, "Encryption Error", "Password was NOT encrypted (Ciphertext is empty). Saving aborted.");
+        QMessageBox::critical(this, "Encryption Error",
+                              "Password was NOT encrypted (Ciphertext is empty). Saving aborted.");
         qDebug() << "ERROR: Encryption failed. Check derived key validity.";
         return;
     }
+
     qDebug() << "Ciphertext Data (HEX - Site):" << site_ciphertext.toHex();
 
-
-    if (Database::addPassword(site_ciphertext, username_ciphertext, password_ciphertext)) {
-        QMessageBox::information(this, "Success", "All fields saved successfully (using derived key)!");
-
-
+    // === Insert into database (with duplicate prevention) ===
+    if (Database::addPassword(site_ciphertext, username_ciphertext, password_ciphertext, entryHash)) {
+        QMessageBox::information(this, "Success", "Credentials saved successfully!");
+        this->close();
     } else {
-        QMessageBox::critical(this, "Database Error", "Failed to save password.");
+        QMessageBox::warning(this, "Duplicate Entry", "These credentials already exist!");
     }
 }
