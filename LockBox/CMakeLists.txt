@@ -10,25 +10,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 
-
-
 set(SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/main.cpp"
+    "${CMAKE_SOURCE_DIR}/mainwindow.cpp"       # 🟢 Add this
     "${CMAKE_SOURCE_DIR}/addpasswordpage.cpp"
     "${CMAKE_SOURCE_DIR}/database.cpp"
     "${CMAKE_SOURCE_DIR}/utils.cpp"
     "${CMAKE_SOURCE_DIR}/crypto.cpp"
+    "${CMAKE_SOURCE_DIR}/passwordlist.cpp"
 )
 
 set(HEADER_FILES
+    "${CMAKE_SOURCE_DIR}/mainwindow.h"          # 🟢 Add this
     "${CMAKE_SOURCE_DIR}/addpasswordpage.h"
     "${CMAKE_SOURCE_DIR}/database.h"
     "${CMAKE_SOURCE_DIR}/utils.h"
     "${CMAKE_SOURCE_DIR}/crypto.h"
+    "${CMAKE_SOURCE_DIR}/passwordlist.h"
 )
 
 set(UI_FILES
+    "${CMAKE_SOURCE_DIR}/mainwindow.ui"         # 🟢 Add this
     "${CMAKE_SOURCE_DIR}/addpasswordpage.ui"
+    "${CMAKE_SOURCE_DIR}/passwordlist.ui"
 )
 
 qt_add_executable(LockBox
@@ -39,16 +43,13 @@ qt_add_executable(LockBox
     style.qss
 )
 
-
-set(SODIUM_BASE_DIR "C:/libsodium/libsodium-win64")
-
+set(SODIUM_BASE_DIR "C:/libsodium-win64")
 
 target_include_directories(LockBox PRIVATE
     "${CMAKE_SOURCE_DIR}/Header Files"
     "${SODIUM_BASE_DIR}/include"
 )
 
-# 3. Add libsodium library directory
 target_link_directories(LockBox PRIVATE
     "${SODIUM_BASE_DIR}/lib"
 )
