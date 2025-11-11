@@ -12,7 +12,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 
 set(SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/main.cpp"
-    "${CMAKE_SOURCE_DIR}/mainwindow.cpp"       # 🟢 Add this
+    "${CMAKE_SOURCE_DIR}/mainwindow.cpp"      
     "${CMAKE_SOURCE_DIR}/addpasswordpage.cpp"
     "${CMAKE_SOURCE_DIR}/database.cpp"
     "${CMAKE_SOURCE_DIR}/utils.cpp"
@@ -21,7 +21,7 @@ set(SOURCE_FILES
 )
 
 set(HEADER_FILES
-    "${CMAKE_SOURCE_DIR}/mainwindow.h"          # 🟢 Add this
+    "${CMAKE_SOURCE_DIR}/mainwindow.h"         
     "${CMAKE_SOURCE_DIR}/addpasswordpage.h"
     "${CMAKE_SOURCE_DIR}/database.h"
     "${CMAKE_SOURCE_DIR}/utils.h"
@@ -30,7 +30,7 @@ set(HEADER_FILES
 )
 
 set(UI_FILES
-    "${CMAKE_SOURCE_DIR}/mainwindow.ui"         # 🟢 Add this
+    "${CMAKE_SOURCE_DIR}/mainwindow.ui"         
     "${CMAKE_SOURCE_DIR}/addpasswordpage.ui"
     "${CMAKE_SOURCE_DIR}/passwordlist.ui"
 )
@@ -40,8 +40,7 @@ qt_add_executable(LockBox
     ${SOURCE_FILES}
     ${HEADER_FILES}
     ${UI_FILES}
-    style.qss
-)
+    )
 
 set(SODIUM_BASE_DIR "C:/libsodium-win64")
 
