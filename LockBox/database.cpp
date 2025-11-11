@@ -24,13 +24,13 @@ bool Database::initialize() {
 
     QSqlQuery query(m_db);
 
-
+    // --- Create passwords table ---
     QString createPasswords = R"(
         CREATE TABLE IF NOT EXISTS passwords (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            site BLOB,
-            username BLOB,
-            password BLOB
+            site BLOB NOT NULL,
+            username BLOB NOT NULL,
+            password BLOB NOT NULL
         )
     )";
 
@@ -39,12 +39,11 @@ bool Database::initialize() {
         return false;
     }
 
-
+    // --- Create users table (without email) ---
     QString createUsers = R"(
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
-            email TEXT NOT NULL,
             salt BLOB NOT NULL,
             verification_ciphertext BLOB NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -60,7 +59,6 @@ bool Database::initialize() {
     qDebug() << "Database initialized successfully (users + passwords tables ready)";
     return true;
 }
-
 
 bool Database::addPassword(const QByteArray &site_ciphertext,
                            const QByteArray &username_ciphertext,

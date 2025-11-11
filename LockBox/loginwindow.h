@@ -7,6 +7,7 @@
 #include <QSqlError>
 #include <QMessageBox>
 #include <QByteArray>
+
 namespace Ui {
 class LoginWindow;
 }
@@ -33,13 +34,11 @@ private:
 
     QByteArray authenticateUser(const QString &username, const QString &password);
 
-    bool registerUser(const QString &username, const QString &password, const QString &email);
-
-    bool resetPassword(const QString &username, const QString &email, const QString &newPassword);
+    bool registerUser(const QString &username, const QString &password);
+    bool resetPassword(const QString &username, const QString &newPassword);
 
     bool validateUsername(const QString &username);
     bool validatePassword(const QString &password);
-    bool validateEmail(const QString &email);
 };
 
 #endif

@@ -1,7 +1,6 @@
 #include "loginwindow.h"
 #include "ui_loginwindow.h"
 #include "addpasswordpage.h"
-
 #include "crypto.h"
 #include "database.h"
 #include "utils.h"
@@ -10,16 +9,16 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QRegularExpression>
+#include <QInputDialog>
 
 LoginWindow::LoginWindow(QWidget *parent)
     : QMainWindow(parent),
-    ui(new Ui::LoginWindow)
+      ui(new Ui::LoginWindow)
 {
     ui->setupUi(this);
 
     setWindowTitle("LockBox - Secure Login");
-    setFixedSize(450, 600);
-
+    setFixedSize(450, 550);
 
     if (sodium_init() < 0) {
         QMessageBox::critical(this, "Fatal Error",
@@ -46,7 +45,7 @@ LoginWindow::~LoginWindow()
     delete ui;
 }
 
-// -------------------- VALIDATION HELPERS --------------------
+// ------------------------- VALIDATION -------------------------
 
 bool LoginWindow::validateUsername(const QString &username)
 {
@@ -62,7 +61,6 @@ bool LoginWindow::validateUsername(const QString &username)
     }
     return true;
 }
-
 
 bool LoginWindow::validatePassword(const QString &password)
 {
@@ -80,18 +78,7 @@ bool LoginWindow::validatePassword(const QString &password)
     return true;
 }
 
-bool LoginWindow::validateEmail(const QString &email)
-{
-    QRegularExpression regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-    if (!regex.match(email).hasMatch()) {
-        QMessageBox::warning(this, "Invalid Email", "Please enter a valid email address.");
-        return false;
-    }
-    return true;
-}
-
-// -------------------- AUTH / REGISTER / RESET LOGIC --------------------
-
+// ------------------------- AUTHENTICATION -------------------------
 
 QByteArray LoginWindow::authenticateUser(const QString &username, const QString &password)
 {
@@ -112,13 +99,10 @@ QByteArray LoginWindow::authenticateUser(const QString &username, const QString 
     QByteArray storedSalt = query.value(0).toByteArray();
     QByteArray storedCiphertext = query.value(1).toByteArray();
 
-
     if (Crypto::verifyMasterPassword(password, storedSalt, storedCiphertext)) {
-
         QByteArray derivedKey = Crypto::deriveKey(password, storedSalt);
 
         if (!derivedKey.isEmpty()) {
-            // Update last login timestamp
             QSqlQuery update(QSqlDatabase::database("lockbox_connection"));
             update.prepare("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE username = :username");
             update.bindValue(":username", username);
@@ -131,15 +115,15 @@ QByteArray LoginWindow::authenticateUser(const QString &username, const QString 
     return QByteArray();
 }
 
+// ------------------------- REGISTRATION -------------------------
 
-bool LoginWindow::registerUser(const QString &username, const QString &password, const QString &email)
+bool LoginWindow::registerUser(const QString &username, const QString &password)
 {
-    if (!validateUsername(username) || !validatePassword(password) || !validateEmail(email))
+    if (!validateUsername(username) || !validatePassword(password))
         return false;
 
     QByteArray salt;
     QByteArray verificationCiphertext;
-
 
     QByteArray derivedKey = Crypto::registerNewUser(password, salt, verificationCiphertext);
 
@@ -149,11 +133,9 @@ bool LoginWindow::registerUser(const QString &username, const QString &password,
     }
 
     QSqlQuery query(QSqlDatabase::database("lockbox_connection"));
-
-    query.prepare("INSERT INTO users (username, email, salt, verification_ciphertext, created_at) "
-                  "VALUES (:username, :email, :salt, :ciphertext, CURRENT_TIMESTAMP)");
+    query.prepare("INSERT INTO users (username, salt, verification_ciphertext, created_at) "
+                  "VALUES (:username, :salt, :ciphertext, CURRENT_TIMESTAMP)");
     query.bindValue(":username", username);
-    query.bindValue(":email", email);
     query.bindValue(":salt", salt);
     query.bindValue(":ciphertext", verificationCiphertext);
 
@@ -173,73 +155,61 @@ bool LoginWindow::registerUser(const QString &username, const QString &password,
     return true;
 }
 
-// -------------------- RESET PASSWORD IMPLEMENTATION --------------------
+// ------------------------- PASSWORD RESET -------------------------
 
-void LoginWindow::onResetPasswordClicked()
+bool LoginWindow::resetPassword(const QString &username, const QString &newPassword)
 {
-    QString username = ui->usernameLineEdit->text().trimmed();
-    QString email = ui->emailLineEdit->text().trimmed();
-    QString newPassword = ui->passwordLineEdit->text();
+    if (!validatePassword(newPassword))
+        return false;
 
-    if (username.isEmpty() || email.isEmpty() || newPassword.isEmpty()) {
-        QMessageBox::warning(this, "Reset Failed",
-                             "To reset your password, please fill in:\n"
-                             "  • Username\n"
-                             "  • Email (for verification)\n"
-                             "  • New Password");
-        return;
+    QSqlQuery query(QSqlDatabase::database("lockbox_connection"));
+    query.prepare("SELECT salt, verification_ciphertext FROM users WHERE username = :username");
+    query.bindValue(":username", username);
+
+    if (!query.exec() || !query.next()) {
+        QMessageBox::warning(this, "Error", "No matching user found.");
+        return false;
     }
 
-    if (!validatePassword(newPassword)) {
-        return; // weak password
+    QByteArray storedSalt = query.value(0).toByteArray();
+    QByteArray storedCiphertext = query.value(1).toByteArray();
+
+    QString oldPassword = QInputDialog::getText(this, "Verify Old Password",
+                                                "Enter your current password:",
+                                                QLineEdit::Password);
+
+    if (oldPassword.isEmpty()) return false;
+
+    if (!Crypto::verifyMasterPassword(oldPassword, storedSalt, storedCiphertext)) {
+        QMessageBox::warning(this, "Incorrect Password", "Your current password is incorrect.");
+        return false;
     }
 
-    QSqlQuery verify(QSqlDatabase::database("lockbox_connection"));
-    verify.prepare("SELECT id FROM users WHERE username = :username AND email = :email");
-    verify.bindValue(":username", username);
-    verify.bindValue(":email", email);
+    QByteArray newSalt, newCipher;
+    QByteArray derivedKey = Crypto::registerNewUser(newPassword, newSalt, newCipher);
 
-    if (!verify.exec()) {
-        QMessageBox::critical(this, "Database Error",
-                              "Failed to query database:\n" + verify.lastError().text());
-        return;
-    }
-
-    if (!verify.next()) {
-        QMessageBox::warning(this, "Reset Failed",
-                             "No user found with that username and email.\nPlease check your details and try again.");
-        return;
-    }
-
-    QByteArray newHash = Crypto::hashPassword(newPassword);
-    if (newHash.isEmpty()) {
-        QMessageBox::critical(this, "Error", "Password hashing failed. Please try again.");
-        return;
+    if (derivedKey.isEmpty()) {
+        QMessageBox::critical(this, "Error", "Failed to generate new password hash.");
+        return false;
     }
 
     QSqlQuery update(QSqlDatabase::database("lockbox_connection"));
-    update.prepare("UPDATE users SET password_hash = :hash WHERE username = :username AND email = :email");
-    update.bindValue(":hash", newHash);
+    update.prepare("UPDATE users SET salt = :salt, verification_ciphertext = :cipher WHERE username = :username");
+    update.bindValue(":salt", newSalt);
+    update.bindValue(":cipher", newCipher);
     update.bindValue(":username", username);
-    update.bindValue(":email", email);
 
     if (!update.exec()) {
-        QMessageBox::critical(this, "Reset Failed",
-                              "Failed to update password:\n" + update.lastError().text());
-        return;
+        QMessageBox::critical(this, "Database Error", "Failed to update password: " + update.lastError().text());
+        return false;
     }
 
-    QMessageBox::information(this, "Password Reset Successful",
-                             "Your password has been updated successfully.\nYou can now log in with the new password.");
-
-    // Clear fields for safety
-    ui->passwordLineEdit->clear();
-    ui->emailLineEdit->clear();
-    ui->usernameLineEdit->setFocus();
+    QMessageBox::information(this, "Password Updated",
+                             "Your master password has been successfully updated!");
+    return true;
 }
 
-// -------------------- LOGIN / REGISTER / TOGGLE --------------------
-
+// ------------------------- BUTTON HANDLERS -------------------------
 
 void LoginWindow::onLoginClicked()
 {
@@ -251,13 +221,11 @@ void LoginWindow::onLoginClicked()
         return;
     }
 
-
     QByteArray derivedKey = authenticateUser(username, password);
 
     if (!derivedKey.isEmpty()) {
         QMessageBox::information(this, "Login Successful", "Welcome back, " + username + "!");
         this->hide();
-
 
         AddPasswordPage *page = new AddPasswordPage(nullptr, derivedKey);
         page->show();
@@ -270,14 +238,27 @@ void LoginWindow::onRegisterClicked()
 {
     QString username = ui->usernameLineEdit->text().trimmed();
     QString password = ui->passwordLineEdit->text();
-    QString email = ui->emailLineEdit->text().trimmed();
 
-    if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+    if (username.isEmpty() || password.isEmpty()) {
         QMessageBox::warning(this, "Registration Failed", "Please fill in all fields.");
         return;
     }
 
-    registerUser(username, password, email);
+    registerUser(username, password);
+}
+
+void LoginWindow::onResetPasswordClicked()
+{
+    QString username = ui->usernameLineEdit->text().trimmed();
+    QString newPassword = ui->passwordLineEdit->text();
+
+    if (username.isEmpty() || newPassword.isEmpty()) {
+        QMessageBox::warning(this, "Reset Failed",
+                             "Please fill in both username and new password fields.");
+        return;
+    }
+
+    resetPassword(username, newPassword);
 }
 
 void LoginWindow::onShowPasswordToggled(bool checked)

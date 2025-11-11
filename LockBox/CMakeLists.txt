@@ -43,23 +43,38 @@ qt_add_executable(LockBox
     ${UI_FILES}
 )
 
-# ---- Windows libsodium ----
+# ---- Platform-specific libsodium ----
 if(WIN32)
+    # Windows setup
     set(SODIUM_ROOT "C:/libsodium/libsodium-win64")
     set(SODIUM_INCLUDE_DIR "${SODIUM_ROOT}/include")
     set(SODIUM_LIB_DIR "${SODIUM_ROOT}/lib")
 
-    message(STATUS " Linking libsodium from ${SODIUM_ROOT}")
+    message(STATUS "Linking libsodium from ${SODIUM_ROOT}")
 
     target_include_directories(LockBox PRIVATE ${SODIUM_INCLUDE_DIR})
     target_link_directories(LockBox PRIVATE ${SODIUM_LIB_DIR})
     target_link_libraries(LockBox PRIVATE libsodium)
+
+elseif(APPLE)
+    # macOS setup (Homebrew)
+    find_path(SODIUM_INCLUDE_DIR sodium.h PATHS /opt/homebrew/include /usr/local/include)
+    find_library(SODIUM_LIBRARY sodium PATHS /opt/homebrew/lib /usr/local/lib)
+
+    if(SODIUM_INCLUDE_DIR AND SODIUM_LIBRARY)
+        message(STATUS "Found libsodium on macOS:")
+        message(STATUS "  Include: ${SODIUM_INCLUDE_DIR}")
+        message(STATUS "  Library: ${SODIUM_LIBRARY}")
+
+        target_include_directories(LockBox PRIVATE ${SODIUM_INCLUDE_DIR})
+        target_link_libraries(LockBox PRIVATE ${SODIUM_LIBRARY})
+    else()
+        message(FATAL_ERROR "libsodium not found on macOS. Please install via Homebrew: brew install libsodium")
+    endif()
 endif()
 
-# ---- Include paths ----
-target_include_directories(LockBox PRIVATE
-    "${CMAKE_SOURCE_DIR}"
-)
+# ---- Include project headers ----
+target_include_directories(LockBox PRIVATE "${CMAKE_SOURCE_DIR}")
 
 # ---- Link Qt libraries ----
 target_link_libraries(LockBox PRIVATE
@@ -67,6 +82,7 @@ target_link_libraries(LockBox PRIVATE
     Qt${QT_VERSION_MAJOR}::Sql
 )
 
+# ---- Platform properties ----
 set_target_properties(LockBox PROPERTIES
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
