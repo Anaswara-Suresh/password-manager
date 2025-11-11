@@ -340,6 +340,12 @@ Qt6Widgets_DIR:PATH=/opt/homebrew/lib/cmake/Qt6Widgets
 //The directory containing a CMake configuration file for Qt6.
 Qt6_DIR:PATH=/opt/homebrew/lib/cmake/Qt6
 
+//Path to a file.
+SODIUM_INCLUDE_DIR:PATH=/opt/homebrew/include
+
+//Path to a library.
+SODIUM_LIBRARY:FILEPATH=/opt/homebrew/lib/libsodium.dylib
+
 //Path to a program.
 Vulkan_GLSLANG_VALIDATOR_EXECUTABLE:FILEPATH=Vulkan_GLSLANG_VALIDATOR_EXECUTABLE-NOTFOUND
 

@@ -198,6 +198,7 @@ LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/utils.cpp.o
 LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/crypto.cpp.o
 LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/loginwindow.cpp.o
 LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/build.make
+LockBox.app/Contents/MacOS/LockBox: /opt/homebrew/lib/libsodium.dylib
 LockBox.app/Contents/MacOS/LockBox: /opt/homebrew/lib/QtWidgets.framework/Versions/A/QtWidgets
 LockBox.app/Contents/MacOS/LockBox: /opt/homebrew/lib/QtSql.framework/Versions/A/QtSql
 LockBox.app/Contents/MacOS/LockBox: /opt/homebrew/lib/QtGui.framework/Versions/A/QtGui

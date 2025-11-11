@@ -587,12 +587,11 @@
 	],
 	"MOC_INCLUDES" : 
 	[
-		"/opt/homebrew/opt/libsodium/include",
 		"/Users/sruthiramesh/Desktop/password-manager/LockBox",
+		"/opt/homebrew/include",
 		"/opt/homebrew/lib/QtCore.framework/Headers",
 		"/opt/homebrew/lib/QtCore.framework",
 		"/opt/homebrew/share/qt/mkspecs/macx-clang",
-		"/opt/homebrew/include",
 		"/opt/homebrew/lib/QtWidgets.framework/Headers",
 		"/opt/homebrew/lib/QtWidgets.framework",
 		"/opt/homebrew/lib/QtGui.framework/Headers",
