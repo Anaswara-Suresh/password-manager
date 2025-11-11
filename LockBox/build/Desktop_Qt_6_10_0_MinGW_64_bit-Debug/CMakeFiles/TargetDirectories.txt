@@ -1,5 +1,0 @@
-C:/Users/Anaswara/Documents/LockBox/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/CMakeFiles/LockBox.dir
-C:/Users/Anaswara/Documents/LockBox/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
-C:/Users/Anaswara/Documents/LockBox/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
-C:/Users/Anaswara/Documents/LockBox/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/CMakeFiles/LockBox_autogen_timestamp_deps.dir
-C:/Users/Anaswara/Documents/LockBox/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/CMakeFiles/LockBox_autogen.dir
