@@ -1,6 +1,7 @@
 #include "loginwindow.h"
 #include "ui_loginwindow.h"
 #include "addpasswordpage.h"
+
 #include "crypto.h"
 #include "database.h"
 #include "utils.h"
@@ -45,6 +46,8 @@ LoginWindow::~LoginWindow()
     delete ui;
 }
 
+// -------------------- VALIDATION HELPERS --------------------
+
 bool LoginWindow::validateUsername(const QString &username)
 {
     if (username.length() < 3 || username.length() > 30) {
@@ -86,6 +89,8 @@ bool LoginWindow::validateEmail(const QString &email)
     }
     return true;
 }
+
+// -------------------- AUTH / REGISTER / RESET LOGIC --------------------
 
 
 QByteArray LoginWindow::authenticateUser(const QString &username, const QString &password)
@@ -168,6 +173,73 @@ bool LoginWindow::registerUser(const QString &username, const QString &password,
     return true;
 }
 
+// -------------------- RESET PASSWORD IMPLEMENTATION --------------------
+
+void LoginWindow::onResetPasswordClicked()
+{
+    QString username = ui->usernameLineEdit->text().trimmed();
+    QString email = ui->emailLineEdit->text().trimmed();
+    QString newPassword = ui->passwordLineEdit->text();
+
+    if (username.isEmpty() || email.isEmpty() || newPassword.isEmpty()) {
+        QMessageBox::warning(this, "Reset Failed",
+                             "To reset your password, please fill in:\n"
+                             "  • Username\n"
+                             "  • Email (for verification)\n"
+                             "  • New Password");
+        return;
+    }
+
+    if (!validatePassword(newPassword)) {
+        return; // weak password
+    }
+
+    QSqlQuery verify(QSqlDatabase::database("lockbox_connection"));
+    verify.prepare("SELECT id FROM users WHERE username = :username AND email = :email");
+    verify.bindValue(":username", username);
+    verify.bindValue(":email", email);
+
+    if (!verify.exec()) {
+        QMessageBox::critical(this, "Database Error",
+                              "Failed to query database:\n" + verify.lastError().text());
+        return;
+    }
+
+    if (!verify.next()) {
+        QMessageBox::warning(this, "Reset Failed",
+                             "No user found with that username and email.\nPlease check your details and try again.");
+        return;
+    }
+
+    QByteArray newHash = Crypto::hashPassword(newPassword);
+    if (newHash.isEmpty()) {
+        QMessageBox::critical(this, "Error", "Password hashing failed. Please try again.");
+        return;
+    }
+
+    QSqlQuery update(QSqlDatabase::database("lockbox_connection"));
+    update.prepare("UPDATE users SET password_hash = :hash WHERE username = :username AND email = :email");
+    update.bindValue(":hash", newHash);
+    update.bindValue(":username", username);
+    update.bindValue(":email", email);
+
+    if (!update.exec()) {
+        QMessageBox::critical(this, "Reset Failed",
+                              "Failed to update password:\n" + update.lastError().text());
+        return;
+    }
+
+    QMessageBox::information(this, "Password Reset Successful",
+                             "Your password has been updated successfully.\nYou can now log in with the new password.");
+
+    // Clear fields for safety
+    ui->passwordLineEdit->clear();
+    ui->emailLineEdit->clear();
+    ui->usernameLineEdit->setFocus();
+}
+
+// -------------------- LOGIN / REGISTER / TOGGLE --------------------
+
 
 void LoginWindow::onLoginClicked()
 {
@@ -206,12 +278,6 @@ void LoginWindow::onRegisterClicked()
     }
 
     registerUser(username, password, email);
-}
-
-void LoginWindow::onResetPasswordClicked()
-{
-    QMessageBox::information(this, "Not Implemented Yet",
-                             "Password reset will be added soon.");
 }
 
 void LoginWindow::onShowPasswordToggled(bool checked)
