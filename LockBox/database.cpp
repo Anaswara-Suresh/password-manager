@@ -1,5 +1,4 @@
 #include "database.h"
-#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
@@ -9,7 +8,6 @@
 QSqlDatabase Database::m_db;
 
 bool Database::initialize() {
-
     if (QSqlDatabase::contains("lockbox_connection")) {
         m_db = QSqlDatabase::database("lockbox_connection");
     } else {
@@ -18,7 +16,7 @@ bool Database::initialize() {
     }
 
     if (!m_db.open()) {
-        qDebug() << "FATAL: Database open failed:" << m_db.lastError().text();
+        qDebug() << "Database open failed:" << m_db.lastError().text();
         return false;
     }
 
@@ -77,4 +75,47 @@ bool Database::addPassword(const QByteArray &site_ciphertext,
 
     qDebug() << "Database successfully inserted one encrypted password row.";
     return true;
+}
+
+QList<QList<QVariant>> Database::fetchAllPasswords() {
+    QList<QList<QVariant>> results;
+    QSqlQuery query(m_db);
+    if (!query.exec("SELECT id, site, username, password FROM passwords")) {
+        qDebug() << "Fetch failed:" << query.lastError().text();
+        return results;
+    }
+
+    while (query.next()) {
+        QList<QVariant> row;
+        row << query.value("id")
+            << query.value("site")
+            << query.value("username")
+            << query.value("password");
+        results << row;
+    }
+    return results;
+}
+
+bool Database::updatePassword(int id, const QByteArray &site, const QByteArray &user, const QByteArray &pass)
+{
+    QSqlQuery query(m_db);
+    query.prepare("UPDATE passwords SET site=?, username=?, password=? WHERE id=?");
+    query.addBindValue(site);
+    query.addBindValue(user);
+    query.addBindValue(pass);
+    query.addBindValue(id);
+    return query.exec();
+}
+
+bool Database::deletePassword(int id)
+{
+    QSqlQuery query(m_db);
+    query.prepare("DELETE FROM passwords WHERE id=?");
+    query.addBindValue(id);
+    return query.exec();
+}
+
+QSqlDatabase& Database::getDatabase()
+{
+    return m_db;
 }

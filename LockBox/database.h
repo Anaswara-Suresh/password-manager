@@ -2,21 +2,24 @@
 #define DATABASE_H
 
 #include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDebug>
+#include <QList>
+#include <QVariant>
 #include <QByteArray>
 
 class Database {
 private:
-
     static QSqlDatabase m_db;
 
 public:
     static bool initialize();
+    static bool addPassword(const QByteArray &site, const QByteArray &username, const QByteArray &password);
+    static QList<QList<QVariant>> fetchAllPasswords();
 
+    static bool updatePassword(int id, const QByteArray &site, const QByteArray &user, const QByteArray &pass);
+    static bool deletePassword(int id);
 
-    static bool addPassword(const QByteArray &site_ciphertext, const QByteArray &username_ciphertext, const QByteArray &password_ciphertext);
+   
+    static QSqlDatabase& getDatabase();
 };
 
-#endif
+#endif 

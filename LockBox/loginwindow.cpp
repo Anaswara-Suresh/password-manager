@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QRegularExpression>
 #include <QInputDialog>
+#include "mainwindow.h"
 
 LoginWindow::LoginWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -227,8 +228,9 @@ void LoginWindow::onLoginClicked()
         QMessageBox::information(this, "Login Successful", "Welcome back, " + username + "!");
         this->hide();
 
-        AddPasswordPage *page = new AddPasswordPage(nullptr, derivedKey);
-        page->show();
+        MainWindow *mainWindow = new MainWindow(derivedKey);
+        mainWindow->setAttribute(Qt::WA_DeleteOnClose);
+        mainWindow->show();
     } else {
         QMessageBox::warning(this, "Login Failed", "Invalid username or password.\nPlease try again.");
     }

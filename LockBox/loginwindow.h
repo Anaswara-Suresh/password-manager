@@ -21,7 +21,7 @@ public:
     ~LoginWindow();
 
 signals:
-    void loginSuccessful(const QString &username);
+    void loginSuccessful(const QByteArray &masterKey);
 
 private slots:
     void onLoginClicked();

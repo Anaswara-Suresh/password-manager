@@ -13,26 +13,32 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 # ---- Source files ----
 set(SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/main.cpp"
+    "${CMAKE_SOURCE_DIR}/mainwindow.cpp"      
     "${CMAKE_SOURCE_DIR}/addpasswordpage.cpp"
     "${CMAKE_SOURCE_DIR}/database.cpp"
     "${CMAKE_SOURCE_DIR}/utils.cpp"
     "${CMAKE_SOURCE_DIR}/crypto.cpp"
     "${CMAKE_SOURCE_DIR}/loginwindow.cpp"
+    "${CMAKE_SOURCE_DIR}/passwordlist.cpp"
 )
 
 # ---- Header files ----
 set(HEADER_FILES
+    "${CMAKE_SOURCE_DIR}/mainwindow.h"         
     "${CMAKE_SOURCE_DIR}/addpasswordpage.h"
     "${CMAKE_SOURCE_DIR}/database.h"
     "${CMAKE_SOURCE_DIR}/utils.h"
     "${CMAKE_SOURCE_DIR}/crypto.h"
     "${CMAKE_SOURCE_DIR}/loginwindow.h"
+    "${CMAKE_SOURCE_DIR}/passwordlist.h"
 )
 
 # ---- UI files ----
 set(UI_FILES
+    "${CMAKE_SOURCE_DIR}/mainwindow.ui"         
     "${CMAKE_SOURCE_DIR}/addpasswordpage.ui"
     "${CMAKE_SOURCE_DIR}/loginwindow.ui"
+    "${CMAKE_SOURCE_DIR}/passwordlist.ui"
 )
 
 # ---- Define executable ----
