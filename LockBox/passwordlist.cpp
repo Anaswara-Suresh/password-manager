@@ -15,6 +15,8 @@ PasswordList::PasswordList(const QByteArray &key, QWidget *parent)
     : QWidget(parent), ui(new Ui::PasswordList), masterKey(key)
 {
     ui->setupUi(this);
+    connect(ui->searchButton, &QPushButton::clicked, this, &PasswordList::onSearchClicked);
+    connect(ui->searchEdit, &QLineEdit::textChanged, this, &PasswordList::onSearchTextChanged);
     loadPasswords();
 }
 
@@ -23,7 +25,7 @@ PasswordList::~PasswordList()
     delete ui;
 }
 
-void PasswordList::loadPasswords()
+void PasswordList::loadPasswords(const QString &filter)
 {
     ui->tableWidget->clear();
     ui->tableWidget->setColumnCount(5);
@@ -31,9 +33,15 @@ void PasswordList::loadPasswords()
     ui->tableWidget->setHorizontalHeaderLabels(headers);
     ui->tableWidget->setRowCount(0);
 
-    QList<QList<QVariant>> all = Database::fetchAllPasswords();
-    int row = 0;
+    QList<QList<QVariant>> all;
 
+    if (filter.isEmpty()) {
+        all = Database::fetchAllPasswords();
+    } else {
+        all = Database::fetchPasswordsBySite(filter);
+    }
+
+    int row = 0;
     for (const QList<QVariant> &record : all) {
         int id = record[0].toInt();
         QByteArray siteBytes = record[1].toByteArray();
@@ -56,16 +64,12 @@ void PasswordList::loadPasswords()
 
         QPushButton *editBtn = new QPushButton("✏️ Edit");
         QPushButton *delBtn = new QPushButton("🗑️ Delete");
-
         layout->addWidget(editBtn);
         layout->addWidget(delBtn);
-        actionWidget->setLayout(layout);
-
         ui->tableWidget->setCellWidget(row, 4, actionWidget);
 
         editBtn->setProperty("entryId", id);
         delBtn->setProperty("entryId", id);
-
         connect(editBtn, &QPushButton::clicked, this, &PasswordList::onEditButtonClicked);
         connect(delBtn, &QPushButton::clicked, this, &PasswordList::onDeleteButtonClicked);
 
@@ -74,6 +78,7 @@ void PasswordList::loadPasswords()
 
     ui->tableWidget->resizeColumnsToContents();
 }
+
 
 void PasswordList::onEditButtonClicked()
 {
@@ -136,3 +141,19 @@ void PasswordList::refreshTable()
 {
     loadPasswords();
 }
+
+void PasswordList::onSearchClicked()
+{
+    QString filter = ui->searchEdit->text().trimmed();
+    loadPasswords(filter);
+}
+
+void PasswordList::onSearchTextChanged(const QString &text)
+{
+
+    if (text.isEmpty())
+        loadPasswords();
+    else
+        loadPasswords(text.trimmed());
+}
+

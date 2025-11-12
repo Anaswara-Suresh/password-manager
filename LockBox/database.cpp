@@ -128,3 +128,29 @@ QSqlDatabase& Database::getDatabase()
 {
     return m_db;
 }
+
+QList<QList<QVariant>> Database::fetchPasswordsBySite(const QString &filter)
+{
+    QList<QList<QVariant>> results;
+
+    QSqlQuery query(QSqlDatabase::database("lockbox_connection"));
+    query.prepare("SELECT id, site, username, password FROM passwords WHERE site LIKE :pattern");
+    query.bindValue(":pattern", "%" + filter + "%");
+
+    if (!query.exec()) {
+        qCritical() << "Database search failed:" << query.lastError().text();
+        return results;
+    }
+
+    while (query.next()) {
+        QList<QVariant> row;
+        row << query.value("id")
+            << query.value("site")
+            << query.value("username")
+            << query.value("password");
+        results.append(row);
+    }
+
+    return results;
+}
+

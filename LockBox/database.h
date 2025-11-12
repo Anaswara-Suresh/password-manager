@@ -15,6 +15,8 @@ public:
     static bool addPassword(const QString &site, const QByteArray &username, const QByteArray &password, const QByteArray &entryHash);
 
     static QList<QList<QVariant>> fetchAllPasswords();
+    static QList<QList<QVariant>> fetchPasswordsBySite(const QString &filter);
+
 
     static bool updatePassword(int id, const QByteArray &site, const QByteArray &user, const QByteArray &pass);
     static bool deletePassword(int id);

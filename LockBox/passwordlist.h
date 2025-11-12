@@ -19,10 +19,13 @@ public:
     ~PasswordList();
 
 private slots:
-    void loadPasswords();
-    void onEditButtonClicked();    
+    void loadPasswords(const QString &filter = QString());
+    void onEditButtonClicked();
+    void onSearchTextChanged(const QString &text);
     void onDeleteButtonClicked();  
     void refreshTable();
+    void onSearchClicked();
+
 
 private:
     Ui::PasswordList *ui;
