@@ -77,22 +77,22 @@ void AddPasswordPage::on_addButton_clicked()
                        combinedBytes.size(),
                        nullptr, 0);
 
+
+
     // === Encrypt data ===
-    QByteArray site_ciphertext = Crypto::encrypt(site_plaintext, m_derivedKey);
     QByteArray username_ciphertext = Crypto::encrypt(username_plaintext, m_derivedKey);
     QByteArray password_ciphertext = Crypto::encrypt(password_plaintext, m_derivedKey);
-
-    if (site_ciphertext.isEmpty() || username_ciphertext.isEmpty() || password_ciphertext.isEmpty()) {
+    if (username_ciphertext.isEmpty() || password_ciphertext.isEmpty()) {
         QMessageBox::critical(this, "Encryption Error",
-                              "Password was NOT encrypted (Ciphertext is empty). Saving aborted.");
+                              "Password or username encryption failed. Saving aborted.");
         qDebug() << "ERROR: Encryption failed. Check derived key validity.";
         return;
     }
 
-    qDebug() << "Ciphertext Data (HEX - Site):" << site_ciphertext.toHex();
+    qDebug() << "Site (Plaintext):" << site_plaintext;
 
     // === Insert into database (with duplicate prevention) ===
-    if (Database::addPassword(site_ciphertext, username_ciphertext, password_ciphertext, entryHash)) {
+    if (Database::addPassword(site_plaintext, username_ciphertext, password_ciphertext, entryHash)) {
         QMessageBox::information(this, "Success", "Credentials saved successfully!");
         this->close();
     } else {

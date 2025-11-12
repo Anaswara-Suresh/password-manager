@@ -26,7 +26,7 @@ bool Database::initialize() {
     QString createPasswords = R"(
     CREATE TABLE IF NOT EXISTS passwords (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        site BLOB NOT NULL,
+        site TEXT NOT NULL,
         username BLOB NOT NULL,
         password BLOB NOT NULL,
         entry_hash BLOB UNIQUE NOT NULL
@@ -58,14 +58,14 @@ bool Database::initialize() {
     return true;
 }
 
-bool Database::addPassword(const QByteArray &site_ciphertext,
+bool Database::addPassword(const QString &site,
                            const QByteArray &username_ciphertext,
                            const QByteArray &password_ciphertext,
                            const QByteArray &entryHash)
 {
     QSqlQuery query(m_db);
     query.prepare("INSERT INTO passwords (site, username, password, entry_hash) VALUES (?, ?, ?, ?)");
-    query.addBindValue(site_ciphertext);
+    query.addBindValue(site);
     query.addBindValue(username_ciphertext);
     query.addBindValue(password_ciphertext);
     query.addBindValue(entryHash);

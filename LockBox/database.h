@@ -12,7 +12,7 @@ private:
 
 public:
     static bool initialize();
-    static bool addPassword(const QByteArray &site, const QByteArray &username, const QByteArray &password, const QByteArray &entryHash);
+    static bool addPassword(const QString &site, const QByteArray &username, const QByteArray &password, const QByteArray &entryHash);
 
     static QList<QList<QVariant>> fetchAllPasswords();
 

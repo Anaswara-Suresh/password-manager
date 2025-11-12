@@ -36,11 +36,11 @@ void PasswordList::loadPasswords()
 
     for (const QList<QVariant> &record : all) {
         int id = record[0].toInt();
-        QByteArray siteCipher = record[1].toByteArray();
+        QByteArray siteBytes = record[1].toByteArray();
         QByteArray userCipher = record[2].toByteArray();
         QByteArray passCipher = record[3].toByteArray();
 
-        QString sitePlain = Crypto::decrypt(siteCipher, masterKey);
+        QString sitePlain = QString::fromUtf8(siteBytes);
         QString userPlain = Crypto::decrypt(userCipher, masterKey);
         QString passPlain = Crypto::decrypt(passCipher, masterKey);
 
@@ -90,7 +90,7 @@ void PasswordList::onEditButtonClicked()
         return;
     }
 
-    QString sitePlain = Crypto::decrypt(query.value("site").toByteArray(), masterKey);
+    QString sitePlain = QString::fromUtf8(query.value("site").toByteArray());
     QString userPlain = Crypto::decrypt(query.value("username").toByteArray(), masterKey);
     QString passPlain = Crypto::decrypt(query.value("password").toByteArray(), masterKey);
 
@@ -104,11 +104,11 @@ void PasswordList::onEditButtonClicked()
     QString newPass = QInputDialog::getText(this, "Edit Password (optional)", "Password:", QLineEdit::Normal, passPlain, &ok);
     if (!ok) return;
 
-    QByteArray siteCipher = newSite.isEmpty() ? query.value("site").toByteArray() : Crypto::encrypt(newSite, masterKey);
+    QByteArray siteBytes = newSite.isEmpty() ? query.value("site").toByteArray() : newSite.toUtf8();
     QByteArray userCipher = newUser.isEmpty() ? query.value("username").toByteArray() : Crypto::encrypt(newUser, masterKey);
     QByteArray passCipher = newPass.isEmpty() ? query.value("password").toByteArray() : Crypto::encrypt(newPass, masterKey);
 
-    if (Database::updatePassword(id, siteCipher, userCipher, passCipher)) {
+    if (Database::updatePassword(id, siteBytes, userCipher, passCipher)) {
         QMessageBox::information(this, "Updated", "Password entry updated successfully!");
         refreshTable();
     } else {
