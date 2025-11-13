@@ -3,7 +3,8 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QString>
-#include <QByteArray>
+#include <QRegularExpression>
+
 
 QSqlDatabase Database::m_db;
 
@@ -22,22 +23,7 @@ bool Database::initialize() {
 
     QSqlQuery query(m_db);
 
-    // --- Create passwords table ---
-    QString createPasswords = R"(
-    CREATE TABLE IF NOT EXISTS passwords (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        site TEXT NOT NULL,
-        username BLOB NOT NULL,
-        password BLOB NOT NULL,
-        entry_hash BLOB UNIQUE NOT NULL
-    )
-)";
-    if (!query.exec(createPasswords)) {
-        qDebug() << "Failed to create passwords table:" << query.lastError().text();
-        return false;
-    }
-
-    // --- Create users table (without email) ---
+    // Users table
     QString createUsers = R"(
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,42 +40,69 @@ bool Database::initialize() {
         return false;
     }
 
-    qDebug() << "Database initialized successfully (users + passwords tables ready)";
+    qDebug() << "Database initialized successfully (users table ready)";
     return true;
 }
 
-bool Database::addPassword(const QString &site,
-                           const QByteArray &username_ciphertext,
-                           const QByteArray &password_ciphertext,
-                           const QByteArray &entryHash)
-{
+bool Database::createUserPasswordTable(const QString &username) {
+    QString tableName = QString("passwords_%1").arg(username);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+
+    QString createTable = QString(R"(
+        CREATE TABLE IF NOT EXISTS %1 (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            site TEXT NOT NULL,
+            username BLOB NOT NULL,
+            password BLOB NOT NULL,
+            entry_hash BLOB UNIQUE NOT NULL
+        )
+    )").arg(tableName);
+
     QSqlQuery query(m_db);
-    query.prepare("INSERT INTO passwords (site, username, password, entry_hash) VALUES (?, ?, ?, ?)");
-    query.addBindValue(site);
-    query.addBindValue(username_ciphertext);
-    query.addBindValue(password_ciphertext);
-    query.addBindValue(entryHash);
-
-    if (!query.exec()) {
-        QString err = query.lastError().text();
-        qDebug() << "Insert failed:" << err;
-
-        if (err.contains("UNIQUE constraint failed")) {
-            // Duplicate found — return false gracefully
-            return false;
-        }
+    if (!query.exec(createTable)) {
+        qDebug() << "Failed to create user table" << tableName << ":" << query.lastError().text();
         return false;
     }
 
-    qDebug() << "Database successfully inserted one encrypted password row.";
+    qDebug() << "Created table for user:" << tableName;
     return true;
 }
 
+bool Database::addPassword(const QString &username,
+                           const QString &site,
+                           const QByteArray &userCipher,
+                           const QByteArray &passCipher,
+                           const QByteArray &entryHash)
+{
+    QString tableName = QString("passwords_%1").arg(username);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
 
-QList<QList<QVariant>> Database::fetchAllPasswords() {
-    QList<QList<QVariant>> results;
+
     QSqlQuery query(m_db);
-    if (!query.exec("SELECT id, site, username, password FROM passwords")) {
+    query.prepare(QString("INSERT INTO %1 (site, username, password, entry_hash) VALUES (?, ?, ?, ?)").arg(tableName));
+    query.addBindValue(site);
+    query.addBindValue(userCipher);
+    query.addBindValue(passCipher);
+    query.addBindValue(entryHash);
+
+    if (!query.exec()) {
+        qDebug() << "Insert failed for" << tableName << ":" << query.lastError().text();
+        return false;
+    }
+
+    qDebug() << "Password added to" << tableName;
+    return true;
+}
+
+QList<QList<QVariant>> Database::fetchAllPasswords(const QString &username) {
+    QList<QList<QVariant>> results;
+    QString tableName = QString("passwords_%1").arg(username);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+
+    QSqlQuery query(m_db);
+    if (!query.exec(QString("SELECT id, site, username, password FROM %1").arg(tableName))) {
         qDebug() << "Fetch failed:" << query.lastError().text();
         return results;
     }
@@ -105,36 +118,13 @@ QList<QList<QVariant>> Database::fetchAllPasswords() {
     return results;
 }
 
-bool Database::updatePassword(int id, const QByteArray &site, const QByteArray &user, const QByteArray &pass)
-{
-    QSqlQuery query(m_db);
-    query.prepare("UPDATE passwords SET site=?, username=?, password=? WHERE id=?");
-    query.addBindValue(site);
-    query.addBindValue(user);
-    query.addBindValue(pass);
-    query.addBindValue(id);
-    return query.exec();
-}
-
-bool Database::deletePassword(int id)
-{
-    QSqlQuery query(m_db);
-    query.prepare("DELETE FROM passwords WHERE id=?");
-    query.addBindValue(id);
-    return query.exec();
-}
-
-QSqlDatabase& Database::getDatabase()
-{
-    return m_db;
-}
-
-QList<QList<QVariant>> Database::fetchPasswordsBySite(const QString &filter)
-{
+QList<QList<QVariant>> Database::fetchPasswordsBySite(const QString &username, const QString &filter) {
     QList<QList<QVariant>> results;
+    QString tableName = QString("passwords_%1").arg(username);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
 
-    QSqlQuery query(QSqlDatabase::database("lockbox_connection"));
-    query.prepare("SELECT id, site, username, password FROM passwords WHERE site LIKE :pattern");
+    QSqlQuery query(m_db);
+    query.prepare(QString("SELECT id, site, username, password FROM %1 WHERE site LIKE :pattern").arg(tableName));
     query.bindValue(":pattern", "%" + filter + "%");
 
     if (!query.exec()) {
@@ -150,7 +140,38 @@ QList<QList<QVariant>> Database::fetchPasswordsBySite(const QString &filter)
             << query.value("password");
         results.append(row);
     }
-
     return results;
 }
 
+bool Database::updatePassword(const QString &username, int id,
+                              const QByteArray &site, const QByteArray &user, const QByteArray &pass)
+{
+    QString tableName = QString("passwords_%1").arg(username);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+
+    QSqlQuery query(m_db);
+    query.prepare(QString("UPDATE %1 SET site=?, username=?, password=? WHERE id=?").arg(tableName));
+    query.addBindValue(site);
+    query.addBindValue(user);
+    query.addBindValue(pass);
+    query.addBindValue(id);
+
+    return query.exec();
+}
+
+bool Database::deletePassword(const QString &username, int id) {
+    QString tableName = QString("passwords_%1").arg(username);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+
+    QSqlQuery query(m_db);
+    query.prepare(QString("DELETE FROM %1 WHERE id=?").arg(tableName));
+    query.addBindValue(id);
+
+    return query.exec();
+}
+
+QSqlDatabase& Database::getDatabase() {
+    return m_db;
+}

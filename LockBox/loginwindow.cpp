@@ -16,7 +16,7 @@
 LoginWindow::LoginWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::LoginWindow),
-    autoLockManager(new AutoLockManager(this, 30000))  // 30s default
+    autoLockManager(new AutoLockManager(this, 30000))
 {
     ui->setupUi(this);
     setWindowTitle("LockBox - Secure Login");
@@ -46,7 +46,6 @@ LoginWindow::LoginWindow(QWidget *parent)
     // Initially stop autolock on login page
     autoLockManager->stop();
 }
-
 
 LoginWindow::~LoginWindow()
 {
@@ -158,6 +157,14 @@ bool LoginWindow::registerUser(const QString &username, const QString &password)
         return false;
     }
 
+
+    if (!Database::createUserPasswordTable(username)) {
+        QMessageBox::warning(this, "Partial Setup",
+                             "User created successfully, but failed to create personal password table.");
+    } else {
+        qDebug() << "Created password table for user:" << username;
+    }
+
     QMessageBox::information(this, "Registration Successful",
                              "Your account has been created!\nYou can now login.");
     return true;
@@ -235,7 +242,8 @@ void LoginWindow::onLoginClicked()
         QMessageBox::information(this, "Login Successful", "Welcome back, " + username + "!");
         this->hide();
 
-        MainWindow *mainWindow = new MainWindow(derivedKey);
+        // ✅ Pass username as well
+        MainWindow *mainWindow = new MainWindow(derivedKey, username);
         mainWindow->setAttribute(Qt::WA_DeleteOnClose);
         mainWindow->show();
 
@@ -246,7 +254,6 @@ void LoginWindow::onLoginClicked()
         QMessageBox::warning(this, "Login Failed", "Invalid username or password.\nPlease try again.");
     }
 }
-
 
 void LoginWindow::onRegisterClicked()
 {
@@ -303,4 +310,3 @@ void LoginWindow::handleAutoLock()
     // Stop autolock since we're on login page
     autoLockManager->stop();
 }
-

@@ -5,6 +5,7 @@
 #include <QList>
 #include <QVariant>
 #include <QByteArray>
+#include <QString>
 
 class Database {
 private:
@@ -12,15 +13,23 @@ private:
 
 public:
     static bool initialize();
-    static bool addPassword(const QString &site, const QByteArray &username, const QByteArray &password, const QByteArray &entryHash);
-
-    static QList<QList<QVariant>> fetchAllPasswords();
-    static QList<QList<QVariant>> fetchPasswordsBySite(const QString &filter);
 
 
-    static bool updatePassword(int id, const QByteArray &site, const QByteArray &user, const QByteArray &pass);
-    static bool deletePassword(int id);
+    static bool createUserPasswordTable(const QString &username);
 
+    static bool addPassword(const QString &username,
+                            const QString &site,
+                            const QByteArray &userCipher,
+                            const QByteArray &passCipher,
+                            const QByteArray &entryHash);
+
+    static QList<QList<QVariant>> fetchAllPasswords(const QString &username);
+    static QList<QList<QVariant>> fetchPasswordsBySite(const QString &username, const QString &filter);
+
+    static bool updatePassword(const QString &username, int id,
+                               const QByteArray &site, const QByteArray &user, const QByteArray &pass);
+
+    static bool deletePassword(const QString &username, int id);
 
     static QSqlDatabase& getDatabase();
 };

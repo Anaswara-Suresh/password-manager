@@ -1,7 +1,9 @@
 #ifndef ADDPASSWORDPAGE_H
 #define ADDPASSWORDPAGE_H
+
 #include <QMainWindow>
-#include <QByteArray> // Added for QByteArray
+#include <QByteArray>
+#include <QString>
 
 namespace Ui {
 class addpasswordpage;
@@ -12,8 +14,9 @@ class AddPasswordPage : public QMainWindow
     Q_OBJECT
 
 public:
-
-    explicit AddPasswordPage(QWidget *parent = nullptr, const QByteArray& derivedKey = QByteArray());
+    explicit AddPasswordPage(QWidget *parent = nullptr,
+                             const QByteArray &derivedKey = QByteArray(),
+                             const QString &currentUsername = QString());
     ~AddPasswordPage();
 
 private slots:
@@ -24,6 +27,7 @@ private slots:
 private:
     Ui::addpasswordpage *ui;
     QByteArray m_derivedKey;
+    QString m_currentUsername;
 };
 
 #endif

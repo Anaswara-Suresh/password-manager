@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 #include <QByteArray>
-
+#include <QString>
 #include "passwordlist.h"
 #include "addpasswordpage.h"
 
@@ -19,12 +19,13 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(const QByteArray &key, QWidget *parent = nullptr);
+    explicit MainWindow(const QByteArray &key, const QString &username, QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
     QByteArray masterKey;
+    QString currentUser;
 
     QStackedWidget *stackedWidget;
     PasswordList *passwordListPage;

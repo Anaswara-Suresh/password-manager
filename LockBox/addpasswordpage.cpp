@@ -7,20 +7,24 @@
 #include <QDebug>
 #include <QByteArray>
 
-
-
-AddPasswordPage::AddPasswordPage(QWidget *parent, const QByteArray& derivedKey)
-    : QMainWindow(parent)
-    , ui(new Ui::addpasswordpage)
-    , m_derivedKey(derivedKey)
+AddPasswordPage::AddPasswordPage(QWidget *parent,
+                                 const QByteArray &derivedKey,
+                                 const QString &currentUsername)
+    : QMainWindow(parent),
+    ui(new Ui::addpasswordpage),
+    m_derivedKey(derivedKey),
+    m_currentUsername(currentUsername)
 {
     ui->setupUi(this);
+
     if (m_derivedKey.isEmpty()) {
         qCritical() << "AddPasswordPage started without a valid encryption key!";
+    }
 
+    if (m_currentUsername.isEmpty()) {
+        qWarning() << "Warning: AddPasswordPage opened without a username!";
     }
 }
-
 
 AddPasswordPage::~AddPasswordPage()
 {
@@ -36,24 +40,21 @@ void AddPasswordPage::on_generateButton_clicked()
 void AddPasswordPage::on_analyzeButton_clicked()
 {
     QString password = ui->passwordEdit->text();
-    qDebug() << "--- STRENGTH CHECK ---";
-    qDebug() << "Password retrieved for analysis:" << password;
-
     int score = Utils::calculatePasswordStrength(password);
-
-    qDebug() << "Calculated Score:" << score;
-    qDebug() << "Strength Label:" << Utils::strengthLabel(score);
-
     ui->strengthLabel->setText("Strength: " + Utils::strengthLabel(score));
 }
-
-
 
 void AddPasswordPage::on_addButton_clicked()
 {
     if (m_derivedKey.isEmpty()) {
         QMessageBox::critical(this, "Security Error",
                               "Cannot save: Encryption key is missing. Please log in again.");
+        return;
+    }
+
+    if (m_currentUsername.isEmpty()) {
+        QMessageBox::critical(this, "User Error",
+                              "User information missing. Please log in again.");
         return;
     }
 
@@ -66,10 +67,9 @@ void AddPasswordPage::on_addButton_clicked()
         return;
     }
 
-    // === Generate unique hash for duplicate checking ===
+    // === Unique entry hash ===
     QString combined = site_plaintext + ":" + username_plaintext;
     QByteArray combinedBytes = combined.toUtf8();
-
     QByteArray entryHash(crypto_generichash_BYTES, 0);
     crypto_generichash(reinterpret_cast<unsigned char*>(entryHash.data()),
                        entryHash.size(),
@@ -77,22 +77,19 @@ void AddPasswordPage::on_addButton_clicked()
                        combinedBytes.size(),
                        nullptr, 0);
 
-
-
-    // === Encrypt data ===
+    // === Encrypt ===
     QByteArray username_ciphertext = Crypto::encrypt(username_plaintext, m_derivedKey);
     QByteArray password_ciphertext = Crypto::encrypt(password_plaintext, m_derivedKey);
+
     if (username_ciphertext.isEmpty() || password_ciphertext.isEmpty()) {
         QMessageBox::critical(this, "Encryption Error",
                               "Password or username encryption failed. Saving aborted.");
-        qDebug() << "ERROR: Encryption failed. Check derived key validity.";
         return;
     }
 
-    qDebug() << "Site (Plaintext):" << site_plaintext;
-
-    // === Insert into database (with duplicate prevention) ===
-    if (Database::addPassword(site_plaintext, username_ciphertext, password_ciphertext, entryHash)) {
+    // === Insert into the logged-in user's table ===
+    if (Database::addPassword(m_currentUsername, site_plaintext,
+                              username_ciphertext, password_ciphertext, entryHash)) {
         QMessageBox::information(this, "Success", "Credentials saved successfully!");
         this->close();
     } else {

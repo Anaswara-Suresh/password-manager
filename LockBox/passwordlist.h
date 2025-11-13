@@ -13,7 +13,7 @@ class PasswordList : public QWidget
     Q_OBJECT
 
 public:
-    explicit PasswordList(const QByteArray &key, QWidget *parent = nullptr);
+    explicit PasswordList(const QByteArray &key, const QString &username, QWidget *parent = nullptr);
     ~PasswordList();
 
 private slots:
@@ -26,10 +26,10 @@ private slots:
     void onCheckAllWithHIBP();
     void updateStatus(const QString &message);
 
-
 private:
     Ui::PasswordList *ui;
     QByteArray masterKey;
+    QString currentUsername;
 };
 
 #endif // PASSWORDLIST_H

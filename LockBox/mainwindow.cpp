@@ -4,18 +4,17 @@
 #include "addpasswordpage.h"
 #include <QMessageBox>
 
-MainWindow::MainWindow(const QByteArray &key, QWidget *parent)
+MainWindow::MainWindow(const QByteArray &key, const QString &username, QWidget *parent)
     : QMainWindow(parent),
-      ui(new Ui::MainWindow),
-      masterKey(key)
+    ui(new Ui::MainWindow),
+    masterKey(key),
+    currentUser(username)
 {
     ui->setupUi(this);
-    setWindowTitle("🔒 LockBox - Vault");
+    setWindowTitle("🔒 LockBox - Vault (" + username + ")");
 
-    // Connect the buttons in your UI
     connect(ui->viewPasswordsButton, &QPushButton::clicked,
             this, &MainWindow::onViewPasswordsClicked);
-
     connect(ui->addPasswordButton, &QPushButton::clicked,
             this, &MainWindow::on_addPasswordButton_clicked);
 }
@@ -27,9 +26,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::onViewPasswordsClicked()
 {
-    PasswordList *listWindow = new PasswordList(masterKey, this);
+    PasswordList *listWindow = new PasswordList(masterKey, currentUser, this);
     listWindow->setAttribute(Qt::WA_DeleteOnClose);
-    listWindow->setWindowTitle("🔐 Saved Passwords");
+    listWindow->setWindowTitle("🔐 " + currentUser + "'s Saved Passwords");
     listWindow->resize(600, 400);
     listWindow->show();
 }
@@ -37,9 +36,9 @@ void MainWindow::onViewPasswordsClicked()
 void MainWindow::on_addPasswordButton_clicked()
 {
     if (!addPasswordWindow) {
-        addPasswordWindow = new AddPasswordPage(this, masterKey);
+        addPasswordWindow = new AddPasswordPage(this, masterKey, currentUser);
         addPasswordWindow->setAttribute(Qt::WA_DeleteOnClose);
-        addPasswordWindow->setWindowTitle("➕ Add New Password");
+        addPasswordWindow->setWindowTitle("➕ Add New Password (" + currentUser + ")");
         addPasswordWindow->resize(500, 400);
 
         connect(addPasswordWindow, &QMainWindow::destroyed, this, [this]() {
@@ -48,7 +47,6 @@ void MainWindow::on_addPasswordButton_clicked()
     }
 
     addPasswordWindow->show();
-    addPasswordWindow->raise();   
+    addPasswordWindow->raise();
     addPasswordWindow->activateWindow();
 }
-
