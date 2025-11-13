@@ -2,6 +2,7 @@
 #include "ui_passwordlist.h"
 #include "database.h"
 #include "crypto.h"
+#include "hibpchecker.h"
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -10,13 +11,20 @@
 #include <QInputDialog>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
 
 PasswordList::PasswordList(const QByteArray &key, QWidget *parent)
     : QWidget(parent), ui(new Ui::PasswordList), masterKey(key)
 {
     ui->setupUi(this);
+    ui->verticalLayout->setContentsMargins(15, 15, 15, 15);
+
     connect(ui->searchButton, &QPushButton::clicked, this, &PasswordList::onSearchClicked);
     connect(ui->searchEdit, &QLineEdit::textChanged, this, &PasswordList::onSearchTextChanged);
+    connect(ui->checkAllButton, &QPushButton::clicked, this, &PasswordList::onCheckAllWithHIBP);
+
+    ui->statusLabel->setText("Ready");
     loadPasswords();
 }
 
@@ -64,21 +72,45 @@ void PasswordList::loadPasswords(const QString &filter)
 
         QPushButton *editBtn = new QPushButton("✏️ Edit");
         QPushButton *delBtn = new QPushButton("🗑️ Delete");
+        QPushButton *checkBtn = new QPushButton("🔍 Check");
+
         layout->addWidget(editBtn);
         layout->addWidget(delBtn);
+        layout->addWidget(checkBtn);
         ui->tableWidget->setCellWidget(row, 4, actionWidget);
 
+        // Connect buttons
         editBtn->setProperty("entryId", id);
         delBtn->setProperty("entryId", id);
         connect(editBtn, &QPushButton::clicked, this, &PasswordList::onEditButtonClicked);
         connect(delBtn, &QPushButton::clicked, this, &PasswordList::onDeleteButtonClicked);
+
+        // Manual HIBP check for this row
+        connect(checkBtn, &QPushButton::clicked, this, [=]() {
+            QString password = ui->tableWidget->item(row, 3)->text();
+            HIBPChecker *checker = new HIBPChecker(this);
+            ui->statusLabel->setText(QString("Checking password for %1...").arg(sitePlain));
+
+            connect(checker, &HIBPChecker::resultReady, this, [=](bool pwned, int count) {
+                if (pwned) {
+                    ui->tableWidget->item(row, 3)->setBackground(QColor("#7f1d1d"));
+                    ui->tableWidget->item(row, 3)->setToolTip(
+                        QString("⚠️ This password was found in data breaches (%1 times)!").arg(count));
+                } else {
+                    ui->tableWidget->item(row, 3)->setBackground(QColor("#1f1f1f"));
+                    ui->tableWidget->item(row, 3)->setToolTip(" Safe (not found in known breaches)");
+                }
+                ui->statusLabel->setText("Check complete ");
+                checker->deleteLater();
+            });
+            checker->checkPassword(password);
+        });
 
         row++;
     }
 
     ui->tableWidget->resizeColumnsToContents();
 }
-
 
 void PasswordList::onEditButtonClicked()
 {
@@ -100,13 +132,13 @@ void PasswordList::onEditButtonClicked()
     QString passPlain = Crypto::decrypt(query.value("password").toByteArray(), masterKey);
 
     bool ok;
-    QString newSite = QInputDialog::getText(this, "Edit Site (optional)", "Site:", QLineEdit::Normal, sitePlain, &ok);
+    QString newSite = QInputDialog::getText(this, "Edit Site", "Site:", QLineEdit::Normal, sitePlain, &ok);
     if (!ok) return;
 
-    QString newUser = QInputDialog::getText(this, "Edit Username (optional)", "Username:", QLineEdit::Normal, userPlain, &ok);
+    QString newUser = QInputDialog::getText(this, "Edit Username", "Username:", QLineEdit::Normal, userPlain, &ok);
     if (!ok) return;
 
-    QString newPass = QInputDialog::getText(this, "Edit Password (optional)", "Password:", QLineEdit::Normal, passPlain, &ok);
+    QString newPass = QInputDialog::getText(this, "Edit Password", "Password:", QLineEdit::Normal, passPlain, &ok);
     if (!ok) return;
 
     QByteArray siteBytes = newSite.isEmpty() ? query.value("site").toByteArray() : newSite.toUtf8();
@@ -150,10 +182,49 @@ void PasswordList::onSearchClicked()
 
 void PasswordList::onSearchTextChanged(const QString &text)
 {
-
     if (text.isEmpty())
         loadPasswords();
     else
         loadPasswords(text.trimmed());
 }
 
+void PasswordList::onCheckAllWithHIBP()
+{
+    updateStatus("Checking all passwords against Have I Been Pwned...");
+    int rows = ui->tableWidget->rowCount();
+
+    for (int row = 0; row < rows; ++row) {
+        QString password = ui->tableWidget->item(row, 3)->text();
+        QString site = ui->tableWidget->item(row, 1)->text();
+
+        HIBPChecker *checker = new HIBPChecker(this);
+        connect(checker, &HIBPChecker::resultReady, this, [=](bool pwned, int count) {
+            if (pwned) {
+                ui->tableWidget->item(row, 3)->setBackground(QColor("#7f1d1d"));
+                ui->tableWidget->item(row, 3)->setToolTip(
+                    QString("⚠️ This password was found in data breaches (%1 times)!").arg(count));
+            } else {
+                ui->tableWidget->item(row, 3)->setBackground(QColor("#1f1f1f"));
+                ui->tableWidget->item(row, 3)->setToolTip(" Safe (not found in known breaches)");
+            }
+            if (row == rows - 1)
+                ui->statusLabel->setText("All passwords checked ");
+            checker->deleteLater();
+        });
+
+        checker->checkPassword(password);
+    }
+}
+void PasswordList::updateStatus(const QString &message)
+{
+    ui->statusLabel->setText(message);
+
+    QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect(this);
+    ui->statusLabel->setGraphicsEffect(effect);
+
+    QPropertyAnimation *animation = new QPropertyAnimation(effect, "opacity");
+    animation->setDuration(300);
+    animation->setStartValue(0.0);
+    animation->setEndValue(1.0);
+    animation->start(QPropertyAnimation::DeleteWhenStopped);
+}

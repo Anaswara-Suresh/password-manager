@@ -239,7 +239,7 @@ void LoginWindow::onLoginClicked()
         mainWindow->setAttribute(Qt::WA_DeleteOnClose);
         mainWindow->show();
 
-        // ✅ Restart auto-lock after login
+        // restart auto-lock after login
         autoLockManager->resetTimer();
         autoLockManager->start();
     } else {

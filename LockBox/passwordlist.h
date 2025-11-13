@@ -14,21 +14,22 @@ class PasswordList : public QWidget
 
 public:
     explicit PasswordList(const QByteArray &key, QWidget *parent = nullptr);
-    QByteArray masterKey;
-
     ~PasswordList();
 
 private slots:
     void loadPasswords(const QString &filter = QString());
     void onEditButtonClicked();
     void onSearchTextChanged(const QString &text);
-    void onDeleteButtonClicked();  
+    void onDeleteButtonClicked();
     void refreshTable();
     void onSearchClicked();
+    void onCheckAllWithHIBP();
+    void updateStatus(const QString &message);
 
 
 private:
     Ui::PasswordList *ui;
+    QByteArray masterKey;
 };
 
-#endif 
+#endif // PASSWORDLIST_H

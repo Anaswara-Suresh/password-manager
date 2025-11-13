@@ -7,8 +7,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql Network)
 
 # ---- Source files ----
 set(SOURCE_FILES
@@ -21,6 +21,7 @@ set(SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/loginwindow.cpp"
     "${CMAKE_SOURCE_DIR}/passwordlist.cpp"
     "${CMAKE_SOURCE_DIR}/autolockmanager.cpp"
+    "${CMAKE_SOURCE_DIR}/hibpchecker.cpp"
 )
 
 # ---- Header files ----
@@ -33,6 +34,8 @@ set(HEADER_FILES
     "${CMAKE_SOURCE_DIR}/loginwindow.h"
     "${CMAKE_SOURCE_DIR}/passwordlist.h"
     "${CMAKE_SOURCE_DIR}/autolockmanager.h"
+    "${CMAKE_SOURCE_DIR}/hibpchecker.h"
+
 )
 
 # ---- UI files ----
@@ -62,7 +65,7 @@ if(WIN32)
 
     target_include_directories(LockBox PRIVATE ${SODIUM_INCLUDE_DIR})
     target_link_directories(LockBox PRIVATE ${SODIUM_LIB_DIR})
-    target_link_libraries(LockBox PRIVATE libsodium)
+    target_link_libraries(LockBox PRIVATE libsodium Qt6::Network)
 
 elseif(APPLE)
     # macOS setup (Homebrew)
@@ -75,11 +78,15 @@ elseif(APPLE)
         message(STATUS "  Library: ${SODIUM_LIBRARY}")
 
         target_include_directories(LockBox PRIVATE ${SODIUM_INCLUDE_DIR})
-        target_link_libraries(LockBox PRIVATE ${SODIUM_LIBRARY})
+        target_link_libraries(LockBox PRIVATE
+            ${SODIUM_LIBRARY}
+            Qt${QT_VERSION_MAJOR}::Network
+        )
     else()
         message(FATAL_ERROR "libsodium not found on macOS. Please install via Homebrew: brew install libsodium")
     endif()
 endif()
+
 
 # ---- Include project headers ----
 target_include_directories(LockBox PRIVATE "${CMAKE_SOURCE_DIR}")
