@@ -174,55 +174,111 @@ bool LoginWindow::registerUser(const QString &username, const QString &password)
 
 bool LoginWindow::resetPassword(const QString &username, const QString &newPassword)
 {
+    // Validate new password
     if (!validatePassword(newPassword))
         return false;
 
-    QSqlQuery query(QSqlDatabase::database("lockbox_connection"));
-    query.prepare("SELECT salt, verification_ciphertext FROM users WHERE username = :username");
-    query.bindValue(":username", username);
+    // Fetch old salt + old verification ciphertext
+    QSqlQuery q(QSqlDatabase::database("lockbox_connection"));
+    q.prepare("SELECT salt, verification_ciphertext FROM users WHERE username = :u");
+    q.bindValue(":u", username);
 
-    if (!query.exec() || !query.next()) {
-        QMessageBox::warning(this, "Error", "No matching user found.");
+    if (!q.exec() || !q.next()) {
+        QMessageBox::warning(this, "Error", "User not found.");
         return false;
     }
 
-    QByteArray storedSalt = query.value(0).toByteArray();
-    QByteArray storedCiphertext = query.value(1).toByteArray();
+    QByteArray oldSalt  = q.value(0).toByteArray();
+    QByteArray oldCipher = q.value(1).toByteArray();
 
+    // Ask for old password
     QString oldPassword = QInputDialog::getText(this, "Verify Old Password",
-                                                "Enter your current password:",
+                                                "Enter CURRENT master password:",
                                                 QLineEdit::Password);
+    if (oldPassword.isEmpty())
+        return false;
 
-    if (oldPassword.isEmpty()) return false;
-
-    if (!Crypto::verifyMasterPassword(oldPassword, storedSalt, storedCiphertext)) {
-        QMessageBox::warning(this, "Incorrect Password", "Your current password is incorrect.");
+    if (!Crypto::verifyMasterPassword(oldPassword, oldSalt, oldCipher)) {
+        QMessageBox::warning(this, "Incorrect Password", "Current password is wrong.");
         return false;
     }
 
-    QByteArray newSalt, newCipher;
-    QByteArray derivedKey = Crypto::registerNewUser(newPassword, newSalt, newCipher);
-
-    if (derivedKey.isEmpty()) {
-        QMessageBox::critical(this, "Error", "Failed to generate new password hash.");
+    // Derive old key
+    QByteArray oldKey = Crypto::deriveKey(oldPassword, oldSalt);
+    if (oldKey.isEmpty()) {
+        QMessageBox::critical(this, "Error", "Failed to derive old key.");
         return false;
     }
 
-    QSqlQuery update(QSqlDatabase::database("lockbox_connection"));
-    update.prepare("UPDATE users SET salt = :salt, verification_ciphertext = :cipher WHERE username = :username");
-    update.bindValue(":salt", newSalt);
-    update.bindValue(":cipher", newCipher);
-    update.bindValue(":username", username);
+    // Fetch full vault contents
+    QList<QVariantMap> vault = Database::getFullVault(username);
 
-    if (!update.exec()) {
-        QMessageBox::critical(this, "Database Error", "Failed to update password: " + update.lastError().text());
+    // Prepare container for decrypted entries
+    struct PlainEntry {
+        int id;
+        QString site;
+        QString user;
+        QString pass;
+    };
+
+    QList<PlainEntry> plainList;
+
+    for (auto &row : vault) {
+        int id = row["id"].toInt();
+        QString site = QString::fromUtf8(row["site"].toByteArray());
+        QString user = Crypto::decrypt(row["username"].toByteArray(), oldKey);
+        QString pass = Crypto::decrypt(row["password"].toByteArray(), oldKey);
+
+        if (user.isEmpty() && !row["username"].toByteArray().isEmpty()) {
+            QMessageBox::critical(this, "Decryption Error",
+                                  "Failed to decrypt your vault using the old password key.\n"
+                                  "Abort to prevent data loss.");
+            return false;
+        }
+
+        plainList.append({ id, site, user, pass });
+    }
+
+    // Generate new salt + new verification cipher + new key
+    QByteArray newSalt, newVerificationCipher;
+    QByteArray newKey = Crypto::registerNewUser(newPassword, newSalt, newVerificationCipher);
+
+    if (newKey.isEmpty()) {
+        QMessageBox::critical(this, "Error", "Failed to generate new master key.");
         return false;
     }
 
-    QMessageBox::information(this, "Password Updated",
-                             "Your master password has been successfully updated!");
+    // Re-encrypt entire vault with new key
+    for (auto &entry : plainList) {
+        QByteArray newUserCipher = Crypto::encrypt(entry.user, newKey);
+        QByteArray newPassCipher = Crypto::encrypt(entry.pass, newKey);
+
+        if (!Database::updateVaultRow(username, entry.id, newUserCipher, newPassCipher)) {
+            QMessageBox::critical(this, "Error", "Failed to update encrypted entry in DB.");
+            return false;
+        }
+    }
+
+    // Update salt + verification ciphertext
+    QSqlQuery upd(QSqlDatabase::database("lockbox_connection"));
+    upd.prepare("UPDATE users SET salt = :s, verification_ciphertext = :v WHERE username = :u");
+    upd.bindValue(":s", newSalt);
+    upd.bindValue(":v", newVerificationCipher);
+    upd.bindValue(":u", username);
+
+    if (!upd.exec()) {
+        QMessageBox::critical(this, "Database Error",
+                              "Failed to update new password hash.");
+        return false;
+    }
+
+    QMessageBox::information(this, "Success",
+                             "Your master password has been safely updated.\n"
+                             "All vault items were re-encrypted securely.");
+
     return true;
 }
+
 
 // ------------------------- BUTTON HANDLERS -------------------------
 

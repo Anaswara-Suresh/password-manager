@@ -196,3 +196,43 @@ bool Database::deletePassword(const QString &username, int id) {
 QSqlDatabase& Database::getDatabase() {
     return m_db;
 }
+
+QList<QVariantMap> Database::getFullVault(const QString &username)
+{
+    QList<QVariantMap> list;
+    QString table = QString("passwords_%1").arg(username).replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+    QSqlQuery q(m_db);
+    q.prepare(QString("SELECT id, site, username, password FROM %1").arg(table));
+
+    if (!q.exec())
+        return list;
+
+    while (q.next()) {
+        QVariantMap row;
+        row["id"] = q.value("id");
+        row["site"] = q.value("site");
+        row["username"] = q.value("username");
+        row["password"] = q.value("password");
+        list.append(row);
+    }
+
+    return list;
+}
+
+
+bool Database::updateVaultRow(const QString &username, int id,
+                              const QByteArray &cipherUser,
+                              const QByteArray &cipherPass)
+{
+    QString table = QString("passwords_%1").arg(username).replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+    QSqlQuery q(m_db);
+    q.prepare(QString("UPDATE %1 SET username = ?, password = ? WHERE id = ?").arg(table));
+    q.addBindValue(cipherUser);
+    q.addBindValue(cipherPass);
+    q.addBindValue(id);
+
+    return q.exec();
+}
+

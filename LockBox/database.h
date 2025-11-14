@@ -32,6 +32,11 @@ public:
     static bool deletePassword(const QString &username, int id);
     static QList<QByteArray> getAllEncryptedPasswords(const QString &owner);
     static QSqlDatabase& getDatabase();
+    static QList<QVariantMap> getFullVault(const QString &username);
+    static bool updateVaultRow(const QString &username, int id,
+                           const QByteArray &cipherUser,
+                           const QByteArray &cipherPass);
+
 };
 
 #endif
