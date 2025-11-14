@@ -4,18 +4,51 @@
  <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <x>0</x><y>0</y><width>800</width><height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Password Manager</string>
   </property>
+
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+
+    <!-- TOP SPACER -->
     <item>
+     <spacer name="topSpacer">
+      <property name="orientation"><enum>Qt::Vertical</enum></property>
+      <property name="sizeHint" stdset="0">
+       <size><width>20</width><height>40</height></size>
+      </property>
+     </spacer>
+    </item>
+
+    <!-- LOGO -->
+    <item alignment="Qt::AlignHCenter">
+     <widget class="QLabel" name="logoLabel">
+      <property name="alignment">
+       <set>Qt::AlignHCenter|Qt::AlignVCenter</set>
+      </property>
+      <property name="pixmap"><pixmap>LockBox_Logo.png</pixmap></property>
+      <property name="scaledContents"><bool>true</bool></property>
+      <property name="minimumSize"><size><width>200</width><height>200</height></size></property>
+      <property name="maximumSize"><size><width>200</width><height>200</height></size></property>
+     </widget>
+    </item>
+
+    <!-- BOTTOM SPACER -->
+    <item>
+     <spacer name="bottomSpacer">
+      <property name="orientation"><enum>Qt::Vertical</enum></property>
+      <property name="sizeHint" stdset="0">
+       <size><width>20</width><height>20</height></size>
+      </property>
+     </spacer>
+    </item>
+
+    <!-- TITLE -->
+    <item alignment="Qt::AlignHCenter">
      <widget class="QLabel" name="titleLabel">
       <property name="font">
        <font>
@@ -24,60 +57,45 @@
        </font>
       </property>
       <property name="text">
-       <string>🔐 Welcome to Your Password Manager</string>
+        <string>Welcome to Your Password Manager</string>
       </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignCenter</set>
-      </property>
+      <property name="alignment"><set>Qt::AlignCenter</set></property>
      </widget>
     </item>
-    <item>
+
+    <!-- VIEW BUTTON -->
+    <item alignment="Qt::AlignHCenter">
      <widget class="QPushButton" name="viewPasswordsButton">
-      <property name="minimumSize">
-       <size>
-        <width>150</width>
-        <height>40</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>View Saved Passwords</string>
-      </property>
+      <property name="minimumSize"><size><width>200</width><height>40</height></size></property>
+      <property name="text"><string>View Saved Passwords</string></property>
      </widget>
     </item>
-    <item>
+
+    <!-- ADD BUTTON -->
+    <item alignment="Qt::AlignHCenter">
      <widget class="QPushButton" name="addPasswordButton">
-      <property name="minimumSize">
-       <size>
-        <width>150</width>
-        <height>40</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Add New Password</string>
-      </property>
+      <property name="minimumSize"><size><width>200</width><height>40</height></size></property>
+      <property name="text"><string>Add New Password</string></property>
      </widget>
     </item>
-    <item>
+
+    <!-- LOGOUT BUTTON (FIXED AND INSIDE LAYOUT) -->
+    <item alignment="Qt::AlignHCenter">
      <widget class="QPushButton" name="btnLogout">
-      <property name="text">
-       <string>Logout</string>
-      </property>
+      <property name="minimumSize"><size><width>200</width><height>40</height></size></property>
+      <property name="text"><string>Logout</string></property>
      </widget>
     </item>
+
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
+
+  <widget class="QMenuBar" name="menubar"/>
   <widget class="QStatusBar" name="statusbar"/>
+
  </widget>
+
  <resources/>
  <connections/>
 </ui>
+

@@ -121,7 +121,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Register</string>
+     <string>Set Password</string>
     </property>
    </widget>
    <widget class="QPushButton" name="resetPasswordButton">
@@ -160,7 +160,7 @@
      <x>0</x>
      <y>0</y>
      <width>480</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>

@@ -102,6 +102,8 @@ set_target_properties(LockBox PROPERTIES
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
+configure_file(${CMAKE_SOURCE_DIR}/LockBox_Logo.png LockBox_Logo.png COPYONLY)
+
 
 # ---- Finalize for Qt6 ----
 if(QT_VERSION_MAJOR EQUAL 6)

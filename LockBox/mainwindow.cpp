@@ -9,15 +9,27 @@ MainWindow::MainWindow(const QByteArray &key, const QString &username, QWidget *
     : QMainWindow(parent),
     ui(new Ui::MainWindow),
     masterKey(key),
-    currentUser(username)
+    currentUser(username),
+    addPasswordWindow(nullptr)
 {
     ui->setupUi(this);
     setWindowTitle("🔒 LockBox - Vault (" + username + ")");
 
+    // Center logo
+    ui->logoLabel->setAlignment(Qt::AlignCenter);
+
+    QPixmap logo("LockBox_Logo.png");
+    ui->logoLabel->setPixmap(
+        logo.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+        );
+
+
     connect(ui->viewPasswordsButton, &QPushButton::clicked,
             this, &MainWindow::onViewPasswordsClicked);
+
     connect(ui->addPasswordButton, &QPushButton::clicked,
             this, &MainWindow::on_addPasswordButton_clicked);
+
     connect(ui->btnLogout, &QPushButton::clicked,
             this, &MainWindow::on_btnLogout_clicked);
 }
@@ -60,7 +72,6 @@ void MainWindow::on_btnLogout_clicked()
     for (QWidget *w : widgets) {
         if (w->inherits("LoginWindow")) {
 
-            // Cast to LoginWindow
             LoginWindow *login = qobject_cast<LoginWindow*>(w);
             if (login) {
                 login->resetFields();
@@ -75,5 +86,3 @@ void MainWindow::on_btnLogout_clicked()
 
     this->close();
 }
-
-
