@@ -48,7 +48,6 @@ void PasswordList::loadPasswords(const QString &filter)
 
     QList<QList<QVariant>> all;
 
-
     if (filter.isEmpty()) {
         all = Database::fetchAllPasswords(currentUsername);
     } else {
@@ -86,37 +85,40 @@ void PasswordList::loadPasswords(const QString &filter)
         layout->addWidget(editBtn);
         layout->addWidget(delBtn);
         layout->addWidget(checkBtn);
-
-
         layout->setSpacing(8);
         layout->setAlignment(Qt::AlignCenter);
-
         ui->tableWidget->setCellWidget(row, 4, actionWidget);
 
-        // Connect buttons
         editBtn->setProperty("entryId", id);
         delBtn->setProperty("entryId", id);
+
         connect(editBtn, &QPushButton::clicked, this, &PasswordList::onEditButtonClicked);
         connect(delBtn, &QPushButton::clicked, this, &PasswordList::onDeleteButtonClicked);
 
-        // Manual HIBP check for this row
+        checkBtn->setProperty("row", row);
+
         connect(checkBtn, &QPushButton::clicked, this, [=]() {
-            QString password = ui->tableWidget->item(row, 3)->text();
+            int realRow = checkBtn->property("row").toInt();
+            QString password = ui->tableWidget->item(realRow, 3)->data(Qt::UserRole).toString();
+
             HIBPChecker *checker = new HIBPChecker(this);
             ui->statusLabel->setText(QString("Checking password for %1...").arg(sitePlain));
 
             connect(checker, &HIBPChecker::resultReady, this, [=](bool pwned, int count) {
+                int r = checkBtn->property("row").toInt();
+
                 if (pwned) {
-                    ui->tableWidget->item(row, 3)->setBackground(QColor("#7f1d1d"));
-                    ui->tableWidget->item(row, 3)->setToolTip(
+                    ui->tableWidget->item(r, 3)->setBackground(QColor("#7f1d1d"));
+                    ui->tableWidget->item(r, 3)->setToolTip(
                         QString("⚠️ Found in data breaches (%1 times)!").arg(count));
                 } else {
-                    ui->tableWidget->item(row, 3)->setBackground(QColor("#1f1f1f"));
-                    ui->tableWidget->item(row, 3)->setToolTip("✅ Safe (no known breaches)");
+                    ui->tableWidget->item(r, 3)->setBackground(QColor("#1f1f1f"));
+                    ui->tableWidget->item(r, 3)->setToolTip("✅ Safe (no known breaches)");
                 }
                 ui->statusLabel->setText("Check complete ");
                 checker->deleteLater();
             });
+
             checker->checkPassword(password);
         });
 
@@ -125,7 +127,6 @@ void PasswordList::loadPasswords(const QString &filter)
 
     ui->tableWidget->resizeColumnsToContents();
     ui->tableWidget->setColumnWidth(4, qMax(300, ui->tableWidget->columnWidth(4)));
-
 }
 
 void PasswordList::onEditButtonClicked()
@@ -213,21 +214,29 @@ void PasswordList::onCheckAllWithHIBP()
     int rows = ui->tableWidget->rowCount();
 
     for (int row = 0; row < rows; ++row) {
-        QString password = ui->tableWidget->item(row, 3)->text();
-        QString site = ui->tableWidget->item(row, 1)->text();
+        QTableWidgetItem *pwItem = ui->tableWidget->item(row, 3);
+        if (!pwItem) continue;
+
+        QString password = pwItem->data(Qt::UserRole).toString();
 
         HIBPChecker *checker = new HIBPChecker(this);
+        checker->setProperty("row", row);
+
         connect(checker, &HIBPChecker::resultReady, this, [=](bool pwned, int count) {
+            int r = checker->property("row").toInt();
+
             if (pwned) {
-                ui->tableWidget->item(row, 3)->setBackground(QColor("#7f1d1d"));
-                ui->tableWidget->item(row, 3)->setToolTip(
+                ui->tableWidget->item(r, 3)->setBackground(QColor("#7f1d1d"));
+                ui->tableWidget->item(r, 3)->setToolTip(
                     QString("⚠️ Found in data breaches (%1 times)!").arg(count));
             } else {
-                ui->tableWidget->item(row, 3)->setBackground(QColor("#1f1f1f"));
-                ui->tableWidget->item(row, 3)->setToolTip("✅ Safe");
+                ui->tableWidget->item(r, 3)->setBackground(QColor("#1f1f1f"));
+                ui->tableWidget->item(r, 3)->setToolTip("✅ Safe");
             }
-            if (row == rows - 1)
+
+            if (r == rows - 1)
                 ui->statusLabel->setText("All passwords checked ");
+
             checker->deleteLater();
         });
 
@@ -262,3 +271,4 @@ void PasswordList::onPasswordCellClicked(int row, int column)
         }
     }
 }
+
