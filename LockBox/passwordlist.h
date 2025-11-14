@@ -16,6 +16,9 @@ public:
     explicit PasswordList(const QByteArray &key, const QString &username, QWidget *parent = nullptr);
     ~PasswordList();
 
+public slots:
+    void refreshPasswords();
+
 private slots:
     void loadPasswords(const QString &filter = QString());
     void onEditButtonClicked();
@@ -25,6 +28,7 @@ private slots:
     void onSearchClicked();
     void onCheckAllWithHIBP();
     void updateStatus(const QString &message);
+    void onPasswordCellClicked(int row, int column);
 
 private:
     Ui::PasswordList *ui;

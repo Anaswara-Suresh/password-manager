@@ -46,6 +46,8 @@ void MainWindow::onViewPasswordsClicked()
     listWindow->setWindowTitle("🔐 " + currentUser + "'s Saved Passwords");
     listWindow->resize(600, 400);
     listWindow->show();
+
+    connect(this, &MainWindow::passwordAdded, listWindow, &PasswordList::refreshPasswords);
 }
 
 void MainWindow::on_addPasswordButton_clicked()
@@ -58,6 +60,7 @@ void MainWindow::on_addPasswordButton_clicked()
 
         connect(addPasswordWindow, &QMainWindow::destroyed, this, [this]() {
             addPasswordWindow = nullptr;
+            emit passwordAdded();
         });
     }
 

@@ -27,6 +27,7 @@ PasswordList::PasswordList(const QByteArray &key, const QString &username, QWidg
     connect(ui->searchButton, &QPushButton::clicked, this, &PasswordList::onSearchClicked);
     connect(ui->searchEdit, &QLineEdit::textChanged, this, &PasswordList::onSearchTextChanged);
     connect(ui->checkAllButton, &QPushButton::clicked, this, &PasswordList::onCheckAllWithHIBP);
+    connect(ui->tableWidget, &QTableWidget::cellClicked, this, &PasswordList::onPasswordCellClicked);
 
     ui->statusLabel->setText("Ready");
     loadPasswords();
@@ -69,7 +70,10 @@ void PasswordList::loadPasswords(const QString &filter)
         ui->tableWidget->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
         ui->tableWidget->setItem(row, 1, new QTableWidgetItem(sitePlain));
         ui->tableWidget->setItem(row, 2, new QTableWidgetItem(userPlain));
-        ui->tableWidget->setItem(row, 3, new QTableWidgetItem(passPlain));
+        
+        QTableWidgetItem *passwordItem = new QTableWidgetItem("********");
+        passwordItem->setData(Qt::UserRole, passPlain);
+        ui->tableWidget->setItem(row, 3, passwordItem);
 
         QWidget *actionWidget = new QWidget(this);
         QHBoxLayout *layout = new QHBoxLayout(actionWidget);
@@ -187,6 +191,11 @@ void PasswordList::refreshTable()
     loadPasswords();
 }
 
+void PasswordList::refreshPasswords()
+{
+    loadPasswords();
+}
+
 void PasswordList::onSearchClicked()
 {
     QString filter = ui->searchEdit->text().trimmed();
@@ -238,4 +247,18 @@ void PasswordList::updateStatus(const QString &message)
     animation->setStartValue(0.0);
     animation->setEndValue(1.0);
     animation->start(QPropertyAnimation::DeleteWhenStopped);
+}
+
+void PasswordList::onPasswordCellClicked(int row, int column)
+{
+    if (column == 3) {
+        QTableWidgetItem *item = ui->tableWidget->item(row, column);
+        if (item) {
+            if (item->text() == "********") {
+                item->setText(item->data(Qt::UserRole).toString());
+            } else {
+                item->setText("********");
+            }
+        }
+    }
 }

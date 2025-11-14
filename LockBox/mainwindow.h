@@ -22,6 +22,9 @@ public:
     explicit MainWindow(const QByteArray &key, const QString &username, QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void passwordAdded();
+
 private:
     Ui::MainWindow *ui;
     QByteArray masterKey;
