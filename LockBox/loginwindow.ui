@@ -14,21 +14,18 @@
    <string>LockBox - Login</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-
-   <!-- Title -->
    <widget class="QLabel" name="titleLabel">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>80</x>
       <y>40</y>
-      <width>221</width>
+      <width>301</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>20</pointsize>
-      <weight>75</weight>
       <bold>true</bold>
      </font>
     </property>
@@ -36,11 +33,9 @@
      <string>Welcome to LockBox</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
    </widget>
-
-   <!-- Username -->
    <widget class="QLabel" name="usernameLabel">
     <property name="geometry">
      <rect>
@@ -64,8 +59,6 @@
      </rect>
     </property>
    </widget>
-
-   <!-- Password -->
    <widget class="QLabel" name="passwordLabel">
     <property name="geometry">
      <rect>
@@ -89,11 +82,9 @@
      </rect>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::Password</enum>
+     <enum>QLineEdit::EchoMode::Password</enum>
     </property>
    </widget>
-
-   <!-- Show Password -->
    <widget class="QCheckBox" name="showPasswordCheckBox">
     <property name="geometry">
      <rect>
@@ -107,8 +98,6 @@
      <string>Show Password</string>
     </property>
    </widget>
-
-   <!-- Buttons -->
    <widget class="QPushButton" name="loginButton">
     <property name="geometry">
      <rect>
@@ -122,7 +111,6 @@
      <string>Login</string>
     </property>
    </widget>
-
    <widget class="QPushButton" name="registerButton">
     <property name="geometry">
      <rect>
@@ -136,7 +124,6 @@
      <string>Register</string>
     </property>
    </widget>
-
    <widget class="QPushButton" name="resetPasswordButton">
     <property name="geometry">
      <rect>
@@ -150,8 +137,6 @@
      <string>Reset Password</string>
     </property>
    </widget>
-
-   <!-- Status -->
    <widget class="QLabel" name="statusLabel">
     <property name="geometry">
      <rect>
@@ -162,13 +147,12 @@
      </rect>
     </property>
     <property name="text">
-     <string></string>
+     <string/>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
    </widget>
-
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

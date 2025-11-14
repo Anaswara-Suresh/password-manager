@@ -20,6 +20,7 @@ class LoginWindow : public QMainWindow
 public:
     explicit LoginWindow(QWidget *parent = nullptr);
     ~LoginWindow();
+    void resetFields();
 
 signals:
     void loginSuccessful(const QByteArray &masterKey);
@@ -30,6 +31,7 @@ private slots:
     void onResetPasswordClicked();
     void onShowPasswordToggled(bool checked);
     void handleAutoLock();
+
 
 private:
     Ui::LoginWindow *ui;
@@ -42,6 +44,7 @@ private:
 
     bool validateUsername(const QString &username);
     bool validatePassword(const QString &password);
+
 };
 
 #endif

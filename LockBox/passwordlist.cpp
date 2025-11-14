@@ -19,6 +19,10 @@ PasswordList::PasswordList(const QByteArray &key, const QString &username, QWidg
 {
     ui->setupUi(this);
     ui->verticalLayout->setContentsMargins(15, 15, 15, 15);
+    this->setMinimumSize(700, 400);
+    ui->tableWidget->resizeColumnsToContents();
+
+    ui->tableWidget->setColumnWidth(4, qMax(300, ui->tableWidget->columnWidth(4)));
 
     connect(ui->searchButton, &QPushButton::clicked, this, &PasswordList::onSearchClicked);
     connect(ui->searchEdit, &QLineEdit::textChanged, this, &PasswordList::onSearchTextChanged);
@@ -78,6 +82,11 @@ void PasswordList::loadPasswords(const QString &filter)
         layout->addWidget(editBtn);
         layout->addWidget(delBtn);
         layout->addWidget(checkBtn);
+
+
+        layout->setSpacing(8);
+        layout->setAlignment(Qt::AlignCenter);
+
         ui->tableWidget->setCellWidget(row, 4, actionWidget);
 
         // Connect buttons
@@ -111,6 +120,8 @@ void PasswordList::loadPasswords(const QString &filter)
     }
 
     ui->tableWidget->resizeColumnsToContents();
+    ui->tableWidget->setColumnWidth(4, qMax(300, ui->tableWidget->columnWidth(4)));
+
 }
 
 void PasswordList::onEditButtonClicked()

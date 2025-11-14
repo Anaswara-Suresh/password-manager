@@ -3,6 +3,7 @@
 #include "passwordlist.h"
 #include "addpasswordpage.h"
 #include <QMessageBox>
+#include "loginwindow.h"
 
 MainWindow::MainWindow(const QByteArray &key, const QString &username, QWidget *parent)
     : QMainWindow(parent),
@@ -17,6 +18,8 @@ MainWindow::MainWindow(const QByteArray &key, const QString &username, QWidget *
             this, &MainWindow::onViewPasswordsClicked);
     connect(ui->addPasswordButton, &QPushButton::clicked,
             this, &MainWindow::on_addPasswordButton_clicked);
+    connect(ui->btnLogout, &QPushButton::clicked,
+            this, &MainWindow::on_btnLogout_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -50,3 +53,27 @@ void MainWindow::on_addPasswordButton_clicked()
     addPasswordWindow->raise();
     addPasswordWindow->activateWindow();
 }
+
+void MainWindow::on_btnLogout_clicked()
+{
+    QWidgetList widgets = QApplication::topLevelWidgets();
+    for (QWidget *w : widgets) {
+        if (w->inherits("LoginWindow")) {
+
+            // Cast to LoginWindow
+            LoginWindow *login = qobject_cast<LoginWindow*>(w);
+            if (login) {
+                login->resetFields();
+            }
+
+            w->show();
+            w->raise();
+            w->activateWindow();
+            break;
+        }
+    }
+
+    this->close();
+}
+
+

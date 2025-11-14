@@ -34,6 +34,8 @@ private:
 private slots:
     void onViewPasswordsClicked();
     void on_addPasswordButton_clicked();
+    void on_btnLogout_clicked();
+
 };
 
 #endif // MAINWINDOW_H

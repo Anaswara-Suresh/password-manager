@@ -311,3 +311,8 @@ void LoginWindow::handleAutoLock()
     // Stop autolock since we're on login page
     autoLockManager->stop();
 }
+void LoginWindow::resetFields()
+{
+    ui->usernameLineEdit->clear();
+    ui->passwordLineEdit->clear();
+}
