@@ -68,6 +68,27 @@ bool Database::createUserPasswordTable(const QString &username) {
     qDebug() << "Created table for user:" << tableName;
     return true;
 }
+QList<QByteArray> Database::getAllEncryptedPasswords(const QString &owner) {
+    QList<QByteArray> list;
+
+    QString tableName = QString("passwords_%1").arg(owner);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+    QSqlQuery query(m_db);
+    query.prepare(QString("SELECT password FROM %1").arg(tableName));
+
+    if (!query.exec()) {
+        qWarning() << "Failed to load encrypted passwords:" << query.lastError();
+        return list;
+    }
+
+    while (query.next()) {
+        list.append(query.value(0).toByteArray());
+    }
+
+    return list;
+}
+
 
 bool Database::addPassword(const QString &username,
                            const QString &site,

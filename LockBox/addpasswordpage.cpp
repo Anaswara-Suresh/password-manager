@@ -66,6 +66,23 @@ void AddPasswordPage::on_addButton_clicked()
         QMessageBox::warning(this, "Error", "All fields are required!");
         return;
     }
+    // === PASSWORD REUSE CHECK ===
+    QList<QByteArray> encryptedList = Database::getAllEncryptedPasswords(m_currentUsername);
+
+    bool reused = false;
+    for (const QByteArray &enc : encryptedList) {
+        QString decrypted = Crypto::decrypt(enc, m_derivedKey);
+        if (decrypted == password_plaintext) {
+            reused = true;
+            break;
+        }
+    }
+
+    if (reused) {
+        QMessageBox::warning(this, "Password Reuse Detected",
+                             "Warning: This password is already used in another entry!");
+
+    }
 
     // === Unique entry hash ===
     QString combined = site_plaintext + ":" + username_plaintext;

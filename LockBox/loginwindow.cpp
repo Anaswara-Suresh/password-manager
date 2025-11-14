@@ -238,6 +238,7 @@ void LoginWindow::onLoginClicked()
 
     QByteArray derivedKey = authenticateUser(username, password);
 
+
     if (!derivedKey.isEmpty()) {
         QMessageBox::information(this, "Login Successful", "Welcome back, " + username + "!");
         this->hide();

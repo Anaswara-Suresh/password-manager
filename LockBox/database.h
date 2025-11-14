@@ -30,7 +30,7 @@ public:
                                const QByteArray &site, const QByteArray &user, const QByteArray &pass);
 
     static bool deletePassword(const QString &username, int id);
-
+    static QList<QByteArray> getAllEncryptedPasswords(const QString &owner);
     static QSqlDatabase& getDatabase();
 };
 
