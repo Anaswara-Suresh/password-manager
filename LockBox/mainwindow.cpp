@@ -71,6 +71,7 @@ void MainWindow::on_addPasswordButton_clicked()
 
 void MainWindow::on_btnLogout_clicked()
 {
+    masterKey.fill(0);
     QWidgetList widgets = QApplication::topLevelWidgets();
     for (QWidget *w : widgets) {
         if (w->inherits("LoginWindow")) {
