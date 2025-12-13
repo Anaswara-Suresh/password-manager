@@ -44,6 +44,7 @@ void PasswordList::loadPasswords(const QString &filter)
     ui->tableWidget->setColumnCount(5);
     QStringList headers = {"ID", "Site", "Username", "Password", "Actions"};
     ui->tableWidget->setHorizontalHeaderLabels(headers);
+    ui->tableWidget->setColumnHidden(0, true);
     ui->tableWidget->setRowCount(0);
 
     QList<QList<QVariant>> all;
@@ -81,16 +82,30 @@ void PasswordList::loadPasswords(const QString &filter)
         QPushButton *editBtn = new QPushButton("✏️ Edit");
         QPushButton *delBtn = new QPushButton("🗑️ Delete");
         QPushButton *checkBtn = new QPushButton("🔍 Check");
+        QPushButton *copyBtn  = new QPushButton("📋 Copy");
 
         layout->addWidget(editBtn);
         layout->addWidget(delBtn);
         layout->addWidget(checkBtn);
+        layout->addWidget(copyBtn);
         layout->setSpacing(8);
         layout->setAlignment(Qt::AlignCenter);
         ui->tableWidget->setCellWidget(row, 4, actionWidget);
 
         editBtn->setProperty("entryId", id);
         delBtn->setProperty("entryId", id);
+        copyBtn->setProperty("row", row);
+
+        connect(copyBtn, &QPushButton::clicked, this, [=]() {
+            int r = copyBtn->property("row").toInt();
+            QString password = ui->tableWidget
+                                   ->item(r, 3)
+                                   ->data(Qt::UserRole)
+                                   .toString();
+
+            emit copyRequested(password);
+            updateStatus("Password copied securely (auto-clears)");
+        });
 
         connect(editBtn, &QPushButton::clicked, this, &PasswordList::onEditButtonClicked);
         connect(delBtn, &QPushButton::clicked, this, &PasswordList::onDeleteButtonClicked);

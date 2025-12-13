@@ -29,6 +29,8 @@ private slots:
     void onCheckAllWithHIBP();
     void updateStatus(const QString &message);
     void onPasswordCellClicked(int row, int column);
+signals:
+    void copyRequested(const QString &password);
 
 private:
     Ui::PasswordList *ui;
