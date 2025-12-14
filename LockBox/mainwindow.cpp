@@ -32,6 +32,9 @@ MainWindow::MainWindow(const QByteArray &key, const QString &username, QWidget *
 
     connect(ui->btnLogout, &QPushButton::clicked,
             this, &MainWindow::on_btnLogout_clicked);
+
+
+
 }
 
 MainWindow::~MainWindow()
@@ -47,8 +50,14 @@ void MainWindow::onViewPasswordsClicked()
     listWindow->resize(600, 400);
     listWindow->show();
 
-    connect(this, &MainWindow::passwordAdded, listWindow, &PasswordList::refreshPasswords);
+
+    connect(listWindow, &PasswordList::copyRequested,
+            this, &MainWindow::copyToSecureClipboard);
+
+    connect(this, &MainWindow::passwordAdded,
+            listWindow, &PasswordList::refreshPasswords);
 }
+
 
 void MainWindow::on_addPasswordButton_clicked()
 {
@@ -89,4 +98,22 @@ void MainWindow::on_btnLogout_clicked()
     }
 
     this->close();
+}
+void MainWindow::copyToSecureClipboard(const QString &secret)
+{
+    const int timeoutMs = 15000;
+
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(secret, QClipboard::Clipboard);
+
+    QTimer::singleShot(timeoutMs, this, [clipboard, secret]() {
+        if (clipboard->text() == secret) {
+            clipboard->clear();
+        }
+    });
+
+    statusBar()->showMessage(
+        "Password copied securely. Clipboard clears in 15 seconds.",
+        3000
+        );
 }

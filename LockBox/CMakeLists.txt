@@ -21,7 +21,9 @@ set(SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/loginwindow.cpp"
     "${CMAKE_SOURCE_DIR}/passwordlist.cpp"
     "${CMAKE_SOURCE_DIR}/autolockmanager.cpp"
-    "${CMAKE_SOURCE_DIR}/hibpchecker.cpp"
+    "${CMAKE_SOURCE_DIR}/hibpchecker.cpp"   
+    "${CMAKE_SOURCE_DIR}/totp.cpp"
+    "${CMAKE_SOURCE_DIR}/totpdialog.cpp"
 )
 
 # ---- Header files ----
@@ -35,6 +37,8 @@ set(HEADER_FILES
     "${CMAKE_SOURCE_DIR}/passwordlist.h"
     "${CMAKE_SOURCE_DIR}/autolockmanager.h"
     "${CMAKE_SOURCE_DIR}/hibpchecker.h"
+    "${CMAKE_SOURCE_DIR}/totp.h"
+    "${CMAKE_SOURCE_DIR}/totpdialog.h"
 
 )
 

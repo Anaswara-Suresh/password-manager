@@ -36,6 +36,13 @@ public:
     static bool updateVaultRow(const QString &username, int id,
                            const QByteArray &cipherUser,
                            const QByteArray &cipherPass);
+    static bool updateTOTP(
+    const QString &username,
+    int id,
+    const QByteArray &totpCipher,
+    int enabled
+);
+
 
 };
 
