@@ -3,6 +3,9 @@
 #include "database.h"
 #include "crypto.h"
 #include "hibpchecker.h"
+#include "vault_exporter.h"
+#include "vault_importer.h"
+
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -13,6 +16,8 @@
 #include <QPushButton>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
+#include <QFileDialog>
+
 
 PasswordList::PasswordList(const QByteArray &key, const QString &username, QWidget *parent)
     : QWidget(parent), ui(new Ui::PasswordList), masterKey(key), currentUsername(username)
@@ -286,4 +291,70 @@ void PasswordList::onPasswordCellClicked(int row, int column)
         }
     }
 }
+
+void PasswordList::on_btnExportVault_clicked()
+{
+    QString path = QFileDialog::getSaveFileName(
+        this,
+        "Export Vault",
+        "",
+        "LockBox Vault (*.lockbox)"
+        );
+
+    if (path.isEmpty())
+        return;
+
+    if (!VaultExporter::exportVault(currentUsername, masterKey, path)) {
+        QMessageBox::critical(this, "Export Failed",
+                              "Could not export vault.");
+        return;
+    }
+    ui->statusLabel->setText("Vault exported successfully");
+
+}
+
+void PasswordList::on_btnImportVault_clicked()
+{
+    QString path = QFileDialog::getOpenFileName(
+        this,
+        "Import Vault",
+        "",
+        "LockBox Vault (*.lockbox)"
+        );
+
+    if (path.isEmpty())
+        return;
+
+    QString oldUser = QInputDialog::getText(
+        this, "Old Username", "Username:");
+
+    if (oldUser.isEmpty())
+        return;
+
+    QString oldPass = QInputDialog::getText(
+        this,
+        "Old Master Password",
+        "Password:",
+        QLineEdit::Password
+        );
+
+    if (oldPass.isEmpty())
+        return;
+
+    if (!VaultImporter::importVault(
+            path,
+            oldUser,
+            oldPass,
+            masterKey,
+            currentUsername)) {
+
+        QMessageBox::critical(this, "Import Failed",
+                              "Invalid credentials or corrupted vault.");
+        return;
+    }
+
+    loadPasswords();  // reload table
+    ui->statusLabel->setText("Vault imported successfully");
+}
+
 
