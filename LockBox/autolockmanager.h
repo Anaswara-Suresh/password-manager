@@ -12,7 +12,7 @@ class AutoLockManager : public QObject
     Q_OBJECT
 
 public:
-    explicit AutoLockManager(QObject *parent = nullptr, int timeoutMs = 30000);
+    explicit AutoLockManager(QObject *parent = nullptr, int timeoutMs = 1000000000);
     void resetTimer();  // manually reset timer
     void start();       // start monitoring
     void stop();        // stop monitoring

@@ -976,9 +976,24 @@ CMakeFiles/LockBox.dir/LockBox_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/lib/QtCore.framework/Headers/qtmocconstants.h \
   /opt/homebrew/lib/QtCore.framework/Headers/q20algorithm.h \
   /opt/homebrew/lib/QtCore.framework/Headers/q23type_traits.h \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/build/LockBox_autogen/EWIEGA46WW/moc_autofillmanager.cpp \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/build/LockBox_autogen/EWIEGA46WW/../../../autofillmanager.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/QObject \
+  /opt/homebrew/lib/QtCore.framework/Headers/QJsonArray \
+  /opt/homebrew/lib/QtCore.framework/Headers/qjsonarray.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qjsonvalue.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qcborvalue.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qcborcommon.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qdatetime.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qcalendar.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qlocale.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qregularexpression.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qurl.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/quuid.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qjsondocument.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qjsonparseerror.h \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/build/LockBox_autogen/EWIEGA46WW/moc_autolockmanager.cpp \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/build/LockBox_autogen/EWIEGA46WW/../../../autolockmanager.h \
-  /opt/homebrew/lib/QtCore.framework/Headers/QObject \
   /opt/homebrew/lib/QtCore.framework/Headers/QTimer \
   /opt/homebrew/lib/QtCore.framework/Headers/qtimer.h \
   /opt/homebrew/lib/QtCore.framework/Headers/qbasictimer.h \
@@ -995,7 +1010,6 @@ CMakeFiles/LockBox.dir/LockBox_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/lib/QtCore.framework/Headers/qcoreapplication_platform.h \
   /opt/homebrew/lib/QtGui.framework/Headers/qguiapplication.h \
   /opt/homebrew/lib/QtGui.framework/Headers/qinputmethod.h \
-  /opt/homebrew/lib/QtCore.framework/Headers/qlocale.h \
   /opt/homebrew/lib/QtGui.framework/Headers/qguiapplication_platform.h \
   /opt/homebrew/lib/QtCore.framework/Headers/QDebug \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/build/LockBox_autogen/EWIEGA46WW/moc_hibpchecker.cpp \
@@ -1009,7 +1023,6 @@ CMakeFiles/LockBox.dir/LockBox_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/lib/QtNetwork.framework/Headers/qhttpheaders.h \
   /opt/homebrew/lib/QtCore.framework/Headers/QSharedDataPointer \
   /opt/homebrew/lib/QtCore.framework/Headers/QUrl \
-  /opt/homebrew/lib/QtCore.framework/Headers/qurl.h \
   /opt/homebrew/lib/QtCore.framework/Headers/QVariant \
   /opt/homebrew/lib/QtCore.framework/Headers/q26numeric.h \
   /opt/homebrew/lib/QtCore.framework/Headers/QList \
@@ -1023,8 +1036,6 @@ CMakeFiles/LockBox.dir/LockBox_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/lib/QtNetwork.framework/Headers/qsslerror.h \
   /opt/homebrew/lib/QtNetwork.framework/Headers/qsslcertificate.h \
   /opt/homebrew/lib/QtCore.framework/Headers/qcryptographichash.h \
-  /opt/homebrew/lib/QtCore.framework/Headers/qdatetime.h \
-  /opt/homebrew/lib/QtCore.framework/Headers/qcalendar.h \
   /opt/homebrew/lib/QtNetwork.framework/Headers/qssl.h \
   /opt/homebrew/lib/QtCore.framework/Headers/QFlags \
   /opt/homebrew/lib/QtNetwork.framework/Headers/QSslPreSharedKeyAuthenticator \
@@ -1036,6 +1047,17 @@ CMakeFiles/LockBox.dir/LockBox_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/lib/QtNetwork.framework/Headers/QNetworkRequest \
   /opt/homebrew/lib/QtCore.framework/Headers/QCryptographicHash \
   /opt/homebrew/lib/QtNetwork.framework/Headers/QSslError \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/build/LockBox_autogen/EWIEGA46WW/moc_ipcserver.cpp \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/build/LockBox_autogen/EWIEGA46WW/../../../ipcserver.h \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/QLocalServer \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/qlocalserver.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qproperty.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qpropertyprivate.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/source_location \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/QLocalSocket \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/qlocalsocket.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/QJsonObject \
+  /opt/homebrew/lib/QtCore.framework/Headers/qjsonobject.h \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/build/LockBox_autogen/EWIEGA46WW/moc_loginwindow.cpp \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/build/LockBox_autogen/EWIEGA46WW/../../../loginwindow.h \
   /opt/homebrew/lib/QtSql.framework/Headers/QSqlDatabase \

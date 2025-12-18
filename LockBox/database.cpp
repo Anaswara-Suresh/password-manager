@@ -236,3 +236,31 @@ bool Database::updateVaultRow(const QString &username, int id,
     return q.exec();
 }
 
+QList<QVariantMap> Database::findBySite(const QString &username, const QString &site)
+{
+    QList<QVariantMap> results;
+
+    QString table = QString("passwords_%1")
+                        .arg(username)
+                        .replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+    QSqlQuery q(m_db);
+    q.prepare(QString("SELECT id, site, username, password FROM %1 WHERE site LIKE :pattern").arg(table));
+    q.bindValue(":pattern", "%" + site + "%");
+
+    if (!q.exec()) {
+        qWarning() << "findBySite query failed:" << q.lastError().text();
+        return results;
+    }
+
+    while (q.next()) {
+        QVariantMap row;
+        row["id"] = q.value("id");
+        row["site"] = q.value("site");
+        row["username"] = q.value("username");
+        row["password"] = q.value("password");
+        results.append(row);
+    }
+
+    return results;
+}

@@ -233,6 +233,62 @@ CMakeFiles/LockBox.dir/hibpchecker.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/LockBox.dir/hibpchecker.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/sruthiramesh/Desktop/password-manager/LockBox/hibpchecker.cpp -o CMakeFiles/LockBox.dir/hibpchecker.cpp.s
 
+CMakeFiles/LockBox.dir/autofillmanager.cpp.o: CMakeFiles/LockBox.dir/flags.make
+CMakeFiles/LockBox.dir/autofillmanager.cpp.o: /Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.cpp
+CMakeFiles/LockBox.dir/autofillmanager.cpp.o: CMakeFiles/LockBox.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/LockBox.dir/autofillmanager.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/LockBox.dir/autofillmanager.cpp.o -MF CMakeFiles/LockBox.dir/autofillmanager.cpp.o.d -o CMakeFiles/LockBox.dir/autofillmanager.cpp.o -c /Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.cpp
+
+CMakeFiles/LockBox.dir/autofillmanager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/LockBox.dir/autofillmanager.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.cpp > CMakeFiles/LockBox.dir/autofillmanager.cpp.i
+
+CMakeFiles/LockBox.dir/autofillmanager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/LockBox.dir/autofillmanager.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.cpp -o CMakeFiles/LockBox.dir/autofillmanager.cpp.s
+
+CMakeFiles/LockBox.dir/ipcserver.cpp.o: CMakeFiles/LockBox.dir/flags.make
+CMakeFiles/LockBox.dir/ipcserver.cpp.o: /Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.cpp
+CMakeFiles/LockBox.dir/ipcserver.cpp.o: CMakeFiles/LockBox.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/LockBox.dir/ipcserver.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/LockBox.dir/ipcserver.cpp.o -MF CMakeFiles/LockBox.dir/ipcserver.cpp.o.d -o CMakeFiles/LockBox.dir/ipcserver.cpp.o -c /Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.cpp
+
+CMakeFiles/LockBox.dir/ipcserver.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/LockBox.dir/ipcserver.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.cpp > CMakeFiles/LockBox.dir/ipcserver.cpp.i
+
+CMakeFiles/LockBox.dir/ipcserver.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/LockBox.dir/ipcserver.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.cpp -o CMakeFiles/LockBox.dir/ipcserver.cpp.s
+
+CMakeFiles/LockBox.dir/vaultsession.cpp.o: CMakeFiles/LockBox.dir/flags.make
+CMakeFiles/LockBox.dir/vaultsession.cpp.o: /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.cpp
+CMakeFiles/LockBox.dir/vaultsession.cpp.o: CMakeFiles/LockBox.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/LockBox.dir/vaultsession.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/LockBox.dir/vaultsession.cpp.o -MF CMakeFiles/LockBox.dir/vaultsession.cpp.o.d -o CMakeFiles/LockBox.dir/vaultsession.cpp.o -c /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.cpp
+
+CMakeFiles/LockBox.dir/vaultsession.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/LockBox.dir/vaultsession.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.cpp > CMakeFiles/LockBox.dir/vaultsession.cpp.i
+
+CMakeFiles/LockBox.dir/vaultsession.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/LockBox.dir/vaultsession.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.cpp -o CMakeFiles/LockBox.dir/vaultsession.cpp.s
+
+CMakeFiles/LockBox.dir/vaultstate.cpp.o: CMakeFiles/LockBox.dir/flags.make
+CMakeFiles/LockBox.dir/vaultstate.cpp.o: /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.cpp
+CMakeFiles/LockBox.dir/vaultstate.cpp.o: CMakeFiles/LockBox.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/LockBox.dir/vaultstate.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/LockBox.dir/vaultstate.cpp.o -MF CMakeFiles/LockBox.dir/vaultstate.cpp.o.d -o CMakeFiles/LockBox.dir/vaultstate.cpp.o -c /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.cpp
+
+CMakeFiles/LockBox.dir/vaultstate.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/LockBox.dir/vaultstate.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.cpp > CMakeFiles/LockBox.dir/vaultstate.cpp.i
+
+CMakeFiles/LockBox.dir/vaultstate.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/LockBox.dir/vaultstate.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.cpp -o CMakeFiles/LockBox.dir/vaultstate.cpp.s
+
 # Object files for target LockBox
 LockBox_OBJECTS = \
 "CMakeFiles/LockBox.dir/LockBox_autogen/mocs_compilation.cpp.o" \
@@ -245,7 +301,11 @@ LockBox_OBJECTS = \
 "CMakeFiles/LockBox.dir/loginwindow.cpp.o" \
 "CMakeFiles/LockBox.dir/passwordlist.cpp.o" \
 "CMakeFiles/LockBox.dir/autolockmanager.cpp.o" \
-"CMakeFiles/LockBox.dir/hibpchecker.cpp.o"
+"CMakeFiles/LockBox.dir/hibpchecker.cpp.o" \
+"CMakeFiles/LockBox.dir/autofillmanager.cpp.o" \
+"CMakeFiles/LockBox.dir/ipcserver.cpp.o" \
+"CMakeFiles/LockBox.dir/vaultsession.cpp.o" \
+"CMakeFiles/LockBox.dir/vaultstate.cpp.o"
 
 # External object files for target LockBox
 LockBox_EXTERNAL_OBJECTS =
@@ -261,6 +321,10 @@ LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/loginwindow.cpp.o
 LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/passwordlist.cpp.o
 LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/autolockmanager.cpp.o
 LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/hibpchecker.cpp.o
+LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/autofillmanager.cpp.o
+LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/ipcserver.cpp.o
+LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/vaultsession.cpp.o
+LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/vaultstate.cpp.o
 LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/build.make
 LockBox.app/Contents/MacOS/LockBox: /opt/homebrew/lib/libsodium.dylib
 LockBox.app/Contents/MacOS/LockBox: /opt/homebrew/lib/QtNetwork.framework/Versions/A/QtNetwork
@@ -269,7 +333,7 @@ LockBox.app/Contents/MacOS/LockBox: /opt/homebrew/lib/QtSql.framework/Versions/A
 LockBox.app/Contents/MacOS/LockBox: /opt/homebrew/lib/QtGui.framework/Versions/A/QtGui
 LockBox.app/Contents/MacOS/LockBox: /opt/homebrew/lib/QtCore.framework/Versions/A/QtCore
 LockBox.app/Contents/MacOS/LockBox: CMakeFiles/LockBox.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable LockBox.app/Contents/MacOS/LockBox"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking CXX executable LockBox.app/Contents/MacOS/LockBox"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/LockBox.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -130,6 +130,19 @@ LockBox/fast:
 .PHONY : LockBox/fast
 
 #=============================================================================
+# Target rules for targets named lockbox_native_host
+
+# Build rule for target.
+lockbox_native_host: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lockbox_native_host
+.PHONY : lockbox_native_host
+
+# fast build rule for target.
+lockbox_native_host/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host.dir/build.make CMakeFiles/lockbox_native_host.dir/build
+.PHONY : lockbox_native_host/fast
+
+#=============================================================================
 # Target rules for targets named LockBox_autogen_timestamp_deps
 
 # Build rule for target.
@@ -154,6 +167,32 @@ LockBox_autogen: cmake_check_build_system
 LockBox_autogen/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox_autogen.dir/build.make CMakeFiles/LockBox_autogen.dir/build
 .PHONY : LockBox_autogen/fast
+
+#=============================================================================
+# Target rules for targets named lockbox_native_host_autogen_timestamp_deps
+
+# Build rule for target.
+lockbox_native_host_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lockbox_native_host_autogen_timestamp_deps
+.PHONY : lockbox_native_host_autogen_timestamp_deps
+
+# fast build rule for target.
+lockbox_native_host_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host_autogen_timestamp_deps.dir/build.make CMakeFiles/lockbox_native_host_autogen_timestamp_deps.dir/build
+.PHONY : lockbox_native_host_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named lockbox_native_host_autogen
+
+# Build rule for target.
+lockbox_native_host_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lockbox_native_host_autogen
+.PHONY : lockbox_native_host_autogen
+
+# fast build rule for target.
+lockbox_native_host_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host_autogen.dir/build.make CMakeFiles/lockbox_native_host_autogen.dir/build
+.PHONY : lockbox_native_host_autogen/fast
 
 LockBox_autogen/mocs_compilation.o: LockBox_autogen/mocs_compilation.cpp.o
 .PHONY : LockBox_autogen/mocs_compilation.o
@@ -202,6 +241,30 @@ addpasswordpage.s: addpasswordpage.cpp.s
 addpasswordpage.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/addpasswordpage.cpp.s
 .PHONY : addpasswordpage.cpp.s
+
+autofillmanager.o: autofillmanager.cpp.o
+.PHONY : autofillmanager.o
+
+# target to build an object file
+autofillmanager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/autofillmanager.cpp.o
+.PHONY : autofillmanager.cpp.o
+
+autofillmanager.i: autofillmanager.cpp.i
+.PHONY : autofillmanager.i
+
+# target to preprocess a source file
+autofillmanager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/autofillmanager.cpp.i
+.PHONY : autofillmanager.cpp.i
+
+autofillmanager.s: autofillmanager.cpp.s
+.PHONY : autofillmanager.s
+
+# target to generate assembly for a file
+autofillmanager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/autofillmanager.cpp.s
+.PHONY : autofillmanager.cpp.s
 
 autolockmanager.o: autolockmanager.cpp.o
 .PHONY : autolockmanager.o
@@ -299,6 +362,54 @@ hibpchecker.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/hibpchecker.cpp.s
 .PHONY : hibpchecker.cpp.s
 
+ipcserver.o: ipcserver.cpp.o
+.PHONY : ipcserver.o
+
+# target to build an object file
+ipcserver.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/ipcserver.cpp.o
+.PHONY : ipcserver.cpp.o
+
+ipcserver.i: ipcserver.cpp.i
+.PHONY : ipcserver.i
+
+# target to preprocess a source file
+ipcserver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/ipcserver.cpp.i
+.PHONY : ipcserver.cpp.i
+
+ipcserver.s: ipcserver.cpp.s
+.PHONY : ipcserver.s
+
+# target to generate assembly for a file
+ipcserver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/ipcserver.cpp.s
+.PHONY : ipcserver.cpp.s
+
+lockbox_native_host_autogen/mocs_compilation.o: lockbox_native_host_autogen/mocs_compilation.cpp.o
+.PHONY : lockbox_native_host_autogen/mocs_compilation.o
+
+# target to build an object file
+lockbox_native_host_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host.dir/build.make CMakeFiles/lockbox_native_host.dir/lockbox_native_host_autogen/mocs_compilation.cpp.o
+.PHONY : lockbox_native_host_autogen/mocs_compilation.cpp.o
+
+lockbox_native_host_autogen/mocs_compilation.i: lockbox_native_host_autogen/mocs_compilation.cpp.i
+.PHONY : lockbox_native_host_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+lockbox_native_host_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host.dir/build.make CMakeFiles/lockbox_native_host.dir/lockbox_native_host_autogen/mocs_compilation.cpp.i
+.PHONY : lockbox_native_host_autogen/mocs_compilation.cpp.i
+
+lockbox_native_host_autogen/mocs_compilation.s: lockbox_native_host_autogen/mocs_compilation.cpp.s
+.PHONY : lockbox_native_host_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+lockbox_native_host_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host.dir/build.make CMakeFiles/lockbox_native_host.dir/lockbox_native_host_autogen/mocs_compilation.cpp.s
+.PHONY : lockbox_native_host_autogen/mocs_compilation.cpp.s
+
 loginwindow.o: loginwindow.cpp.o
 .PHONY : loginwindow.o
 
@@ -371,6 +482,30 @@ mainwindow.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/mainwindow.cpp.s
 .PHONY : mainwindow.cpp.s
 
+nativehost/main.o: nativehost/main.cpp.o
+.PHONY : nativehost/main.o
+
+# target to build an object file
+nativehost/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host.dir/build.make CMakeFiles/lockbox_native_host.dir/nativehost/main.cpp.o
+.PHONY : nativehost/main.cpp.o
+
+nativehost/main.i: nativehost/main.cpp.i
+.PHONY : nativehost/main.i
+
+# target to preprocess a source file
+nativehost/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host.dir/build.make CMakeFiles/lockbox_native_host.dir/nativehost/main.cpp.i
+.PHONY : nativehost/main.cpp.i
+
+nativehost/main.s: nativehost/main.cpp.s
+.PHONY : nativehost/main.s
+
+# target to generate assembly for a file
+nativehost/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host.dir/build.make CMakeFiles/lockbox_native_host.dir/nativehost/main.cpp.s
+.PHONY : nativehost/main.cpp.s
+
 passwordlist.o: passwordlist.cpp.o
 .PHONY : passwordlist.o
 
@@ -419,6 +554,57 @@ utils.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/utils.cpp.s
 .PHONY : utils.cpp.s
 
+vaultsession.o: vaultsession.cpp.o
+.PHONY : vaultsession.o
+
+# target to build an object file
+vaultsession.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/vaultsession.cpp.o
+.PHONY : vaultsession.cpp.o
+
+vaultsession.i: vaultsession.cpp.i
+.PHONY : vaultsession.i
+
+# target to preprocess a source file
+vaultsession.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/vaultsession.cpp.i
+.PHONY : vaultsession.cpp.i
+
+vaultsession.s: vaultsession.cpp.s
+.PHONY : vaultsession.s
+
+# target to generate assembly for a file
+vaultsession.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/vaultsession.cpp.s
+.PHONY : vaultsession.cpp.s
+
+vaultstate.o: vaultstate.cpp.o
+.PHONY : vaultstate.o
+
+# target to build an object file
+vaultstate.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/vaultstate.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host.dir/build.make CMakeFiles/lockbox_native_host.dir/vaultstate.cpp.o
+.PHONY : vaultstate.cpp.o
+
+vaultstate.i: vaultstate.cpp.i
+.PHONY : vaultstate.i
+
+# target to preprocess a source file
+vaultstate.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/vaultstate.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host.dir/build.make CMakeFiles/lockbox_native_host.dir/vaultstate.cpp.i
+.PHONY : vaultstate.cpp.i
+
+vaultstate.s: vaultstate.cpp.s
+.PHONY : vaultstate.s
+
+# target to generate assembly for a file
+vaultstate.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LockBox.dir/build.make CMakeFiles/LockBox.dir/vaultstate.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lockbox_native_host.dir/build.make CMakeFiles/lockbox_native_host.dir/vaultstate.cpp.s
+.PHONY : vaultstate.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -429,13 +615,19 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... LockBox_autogen"
 	@echo "... LockBox_autogen_timestamp_deps"
+	@echo "... lockbox_native_host_autogen"
+	@echo "... lockbox_native_host_autogen_timestamp_deps"
 	@echo "... LockBox"
+	@echo "... lockbox_native_host"
 	@echo "... LockBox_autogen/mocs_compilation.o"
 	@echo "... LockBox_autogen/mocs_compilation.i"
 	@echo "... LockBox_autogen/mocs_compilation.s"
 	@echo "... addpasswordpage.o"
 	@echo "... addpasswordpage.i"
 	@echo "... addpasswordpage.s"
+	@echo "... autofillmanager.o"
+	@echo "... autofillmanager.i"
+	@echo "... autofillmanager.s"
 	@echo "... autolockmanager.o"
 	@echo "... autolockmanager.i"
 	@echo "... autolockmanager.s"
@@ -448,6 +640,12 @@ help:
 	@echo "... hibpchecker.o"
 	@echo "... hibpchecker.i"
 	@echo "... hibpchecker.s"
+	@echo "... ipcserver.o"
+	@echo "... ipcserver.i"
+	@echo "... ipcserver.s"
+	@echo "... lockbox_native_host_autogen/mocs_compilation.o"
+	@echo "... lockbox_native_host_autogen/mocs_compilation.i"
+	@echo "... lockbox_native_host_autogen/mocs_compilation.s"
 	@echo "... loginwindow.o"
 	@echo "... loginwindow.i"
 	@echo "... loginwindow.s"
@@ -457,12 +655,21 @@ help:
 	@echo "... mainwindow.o"
 	@echo "... mainwindow.i"
 	@echo "... mainwindow.s"
+	@echo "... nativehost/main.o"
+	@echo "... nativehost/main.i"
+	@echo "... nativehost/main.s"
 	@echo "... passwordlist.o"
 	@echo "... passwordlist.i"
 	@echo "... passwordlist.s"
 	@echo "... utils.o"
 	@echo "... utils.i"
 	@echo "... utils.s"
+	@echo "... vaultsession.o"
+	@echo "... vaultsession.i"
+	@echo "... vaultsession.s"
+	@echo "... vaultstate.o"
+	@echo "... vaultstate.i"
+	@echo "... vaultstate.s"
 .PHONY : help
 
 

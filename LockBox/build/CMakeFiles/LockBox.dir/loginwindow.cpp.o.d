@@ -1109,4 +1109,28 @@ CMakeFiles/LockBox.dir/loginwindow.cpp.o: \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/mainwindow.h \
   /opt/homebrew/lib/QtWidgets.framework/Headers/QStackedWidget \
   /opt/homebrew/lib/QtWidgets.framework/Headers/qstackedwidget.h \
-  /Users/sruthiramesh/Desktop/password-manager/LockBox/passwordlist.h
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/passwordlist.h \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.h \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.h \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.h \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/QLocalServer \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/qlocalserver.h \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/qtnetworkglobal.h \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/qtnetwork-config.h \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/qtnetworkexports.h \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/qabstractsocket.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qproperty.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qpropertyprivate.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/source_location \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/QLocalSocket \
+  /opt/homebrew/lib/QtNetwork.framework/Headers/qlocalsocket.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/QJsonObject \
+  /opt/homebrew/lib/QtCore.framework/Headers/qjsonobject.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qjsonvalue.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qcborvalue.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qcborcommon.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qdatetime.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qcalendar.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/quuid.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qjsondocument.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/qjsonparseerror.h

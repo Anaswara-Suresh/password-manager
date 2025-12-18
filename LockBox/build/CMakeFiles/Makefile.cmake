@@ -438,6 +438,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "LockBox_Logo.png"
   ".qt/info_plist/LockBox/Info.plist"
   "CMakeFiles/LockBox_autogen.dir/AutogenInfo.json"
+  "CMakeFiles/lockbox_native_host_autogen.dir/AutogenInfo.json"
   ".qt/QtDeploySupport.cmake"
   ".qt/QtDeployTargets.cmake"
   "LockBox.app/Contents/MacOS"
@@ -449,6 +450,9 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/LockBox.dir/DependInfo.cmake"
+  "CMakeFiles/lockbox_native_host.dir/DependInfo.cmake"
   "CMakeFiles/LockBox_autogen_timestamp_deps.dir/DependInfo.cmake"
   "CMakeFiles/LockBox_autogen.dir/DependInfo.cmake"
+  "CMakeFiles/lockbox_native_host_autogen_timestamp_deps.dir/DependInfo.cmake"
+  "CMakeFiles/lockbox_native_host_autogen.dir/DependInfo.cmake"
   )

@@ -13,6 +13,8 @@ private:
 
 public:
     static bool initialize();
+    static QList<QVariantMap> findBySite(const QString &username, const QString &site);
+
 
 
     static bool createUserPasswordTable(const QString &username);

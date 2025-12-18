@@ -587,6 +587,12 @@
 			null
 		],
 		[
+			"/Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.h",
+			"MU",
+			"EWIEGA46WW/moc_autofillmanager.cpp",
+			null
+		],
+		[
 			"/Users/sruthiramesh/Desktop/password-manager/LockBox/autolockmanager.h",
 			"MU",
 			"EWIEGA46WW/moc_autolockmanager.cpp",
@@ -611,6 +617,12 @@
 			null
 		],
 		[
+			"/Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.h",
+			"MU",
+			"EWIEGA46WW/moc_ipcserver.cpp",
+			null
+		],
+		[
 			"/Users/sruthiramesh/Desktop/password-manager/LockBox/loginwindow.h",
 			"MU",
 			"EWIEGA46WW/moc_loginwindow.cpp",
@@ -632,6 +644,18 @@
 			"/Users/sruthiramesh/Desktop/password-manager/LockBox/utils.h",
 			"MU",
 			"EWIEGA46WW/moc_utils.cpp",
+			null
+		],
+		[
+			"/Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.h",
+			"MU",
+			"EWIEGA46WW/moc_vaultsession.cpp",
+			null
+		],
+		[
+			"/Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.h",
+			"MU",
+			"EWIEGA46WW/moc_vaultstate.cpp",
 			null
 		]
 	],
@@ -714,6 +738,11 @@
 			null
 		],
 		[
+			"/Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.cpp",
+			"MU",
+			null
+		],
+		[
 			"/Users/sruthiramesh/Desktop/password-manager/LockBox/autolockmanager.cpp",
 			"MU",
 			null
@@ -730,6 +759,11 @@
 		],
 		[
 			"/Users/sruthiramesh/Desktop/password-manager/LockBox/hibpchecker.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.cpp",
 			"MU",
 			null
 		],
@@ -755,6 +789,16 @@
 		],
 		[
 			"/Users/sruthiramesh/Desktop/password-manager/LockBox/utils.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.cpp",
 			"MU",
 			null
 		]

@@ -735,6 +735,8 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
   /Users/sruthiramesh/Desktop/password-manager/LockBox/addpasswordpage.cpp \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/addpasswordpage.h \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/addpasswordpage.ui \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.cpp \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.h \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/autolockmanager.cpp \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/autolockmanager.h \
   CMakeFiles/4.1.2/CMakeCXXCompiler.cmake \
@@ -746,6 +748,8 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
   /Users/sruthiramesh/Desktop/password-manager/LockBox/database.h \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/hibpchecker.cpp \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/hibpchecker.h \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.cpp \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.h \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/loginwindow.cpp \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/loginwindow.h \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/loginwindow.ui \
@@ -758,12 +762,18 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
   /Users/sruthiramesh/Desktop/password-manager/LockBox/passwordlist.ui \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/utils.cpp \
   /Users/sruthiramesh/Desktop/password-manager/LockBox/utils.h \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.cpp \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.h \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.cpp \
+  /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QByteArray \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QCryptographicHash \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QDebug \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QEvent \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QFlags \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QIODevice \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QJsonArray \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QJsonObject \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QList \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QMetaType \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QObject \
@@ -797,6 +807,8 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbytearraylist.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbytearrayview.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcalendar.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcborcommon.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcborvalue.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qchar.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcompare.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcompare_impl.h \
@@ -835,6 +847,11 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qiodevicebase.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qiterable.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qiterator.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonarray.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsondocument.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonobject.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonparseerror.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonvalue.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qlatin1stringview.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qline.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qlist.h \
@@ -859,8 +876,11 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qpair.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qpoint.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qprocessordetection.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qproperty.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qpropertyprivate.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qrect.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qrefcount.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qregularexpression.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qscopedpointer.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qscopeguard.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qset.h \
@@ -910,6 +930,7 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qtypes.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qurl.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qutf8stringview.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/quuid.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qvariant.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qvarlengtharray.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qversiontagging.h \
@@ -943,6 +964,8 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtGui.framework/Versions/A/Headers/qtguiglobal.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtGui.framework/Versions/A/Headers/qtransform.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtGui.framework/Versions/A/Headers/qwindowdefs.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QLocalServer \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QLocalSocket \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QNetworkAccessManager \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QNetworkReply \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QNetworkRequest \
@@ -951,6 +974,8 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qabstractsocket.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qhostaddress.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qhttpheaders.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qlocalserver.h \
+  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qlocalsocket.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qnetworkaccessmanager.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qnetworkreply.h \
   /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qnetworkrequest.h \
@@ -1492,8 +1517,6 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 
 /opt/homebrew/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfigVersionImpl.cmake:
 
-/opt/homebrew/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfig.cmake:
-
 /opt/homebrew/lib/cmake/Qt6Widgets/Qt6WidgetsTargets-release.cmake:
 
 /opt/homebrew/lib/cmake/Qt6Widgets/Qt6WidgetsConfigVersionImpl.cmake:
@@ -1545,8 +1568,6 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 /opt/homebrew/lib/cmake/Qt6Network/Qt6QGlibNetworkInformationPluginConfig.cmake:
 
 /opt/homebrew/lib/cmake/Qt6Network/Qt6NetworkTargets.cmake:
-
-/opt/homebrew/lib/cmake/Qt6Network/Qt6NetworkTargets-release.cmake:
 
 /opt/homebrew/share/cmake/Modules/Compiler/Borland-DetermineCompiler.cmake:
 
@@ -1760,8 +1781,6 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 
 /opt/homebrew/lib/cmake/Qt6Core/Qt6CorePlugins.cmake:
 
-/opt/homebrew/lib/cmake/Qt6Core/Qt6CoreConfigVersionImpl.cmake:
-
 /opt/homebrew/lib/cmake/Qt6Core/Qt6CoreConfigVersion.cmake:
 
 /opt/homebrew/lib/cmake/Qt6Core/Qt6CoreConfig.cmake:
@@ -1896,6 +1915,8 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QNetworkReply:
 
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QLocalSocket:
+
 /opt/homebrew/lib/cmake/Qt6Widgets/Qt6WidgetsMacros.cmake:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtGui.framework/Versions/A/Headers/qtguiglobal.h:
@@ -1944,6 +1965,8 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qvarlengtharray.h:
 
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/quuid.h:
+
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qtypes.h:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qtypeinfo.h:
@@ -1959,8 +1982,6 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qtextstream.h:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qtdeprecationmarkers.h:
-
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qtcoreglobal.h:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtWidgets.framework/Versions/A/Headers/qmessagebox.h:
 
@@ -2008,13 +2029,17 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qsize.h:
 
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qshareddata.h:
-
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qset.h:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qscopedpointer.h:
 
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qregularexpression.h:
+
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qrect.h:
+
+/opt/homebrew/lib/cmake/Qt6Core/Qt6CoreConfigVersionImpl.cmake:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qpropertyprivate.h:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qpoint.h:
 
@@ -2059,6 +2084,10 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qshareddata_impl.h:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qlatin1stringview.h:
+
+/opt/homebrew/lib/cmake/Qt6WidgetsPrivate/Qt6WidgetsPrivateConfig.cmake:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonparseerror.h:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qiterator.h:
 
@@ -2142,15 +2171,21 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcompare.h:
 
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/q20iterator.h:
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QSslConfiguration:
 
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qchar.h:
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcalendar.h:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbytearrayview.h:
 
 /opt/homebrew/share/cmake/Modules/CMakeCommonLanguageInclude.cmake:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbasictimer.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qnamespace.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbasicatomic.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qatomic_cxx11.h:
 
 /opt/homebrew/lib/cmake/Qt6Widgets/Qt6WidgetsAdditionalTargetInfo.cmake:
 
@@ -2202,6 +2237,8 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QObject:
 
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QJsonArray:
+
 /opt/homebrew/lib/cmake/Qt6Network/Qt6QSecureTransportBackendPluginConfig.cmake:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QIODevice:
@@ -2218,6 +2255,8 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 
 /Users/sruthiramesh/Desktop/password-manager/LockBox/loginwindow.ui:
 
+/Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.cpp:
+
 /Users/sruthiramesh/Desktop/password-manager/LockBox/database.cpp:
 
 /Users/sruthiramesh/Desktop/password-manager/LockBox/crypto.h:
@@ -2227,6 +2266,12 @@ LockBox_autogen/timestamp: /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.s
 /Users/sruthiramesh/Desktop/password-manager/LockBox/crypto.cpp:
 
 LockBox_autogen/moc_predefs.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qlocalserver.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__iterator/prev.h:
+
+/Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.h:
 
 /Users/sruthiramesh/Desktop/password-manager/LockBox/addpasswordpage.ui:
 
@@ -2282,12 +2327,6 @@ LockBox_autogen/moc_predefs.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/sys/_types/_u_short.h:
 
-/opt/homebrew/lib/cmake/Qt6Core/Qt6QDarwinCalendarPermissionPluginConfig.cmake:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__memory/out_ptr.h:
-
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbindingstorage.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/sys/_types/_u_int8_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/sys/_types/_u_int.h:
@@ -2303,6 +2342,8 @@ LockBox_autogen/moc_predefs.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/sys/_types/_rsize_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/sys/_types/_pid_t.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonobject.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/sys/_types/_off_t.h:
 
@@ -2530,12 +2571,6 @@ CMakeFiles/4.1.2/CMakeCXXCompiler.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/ctype.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__algorithm/copy_if.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__functional/invoke.h:
-
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbytearray.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__concepts/same_as.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/optional:
@@ -2572,7 +2607,11 @@ CMakeFiles/4.1.2/CMakeCXXCompiler.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/cassert:
 
+/Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.cpp:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/array:
+
+/Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__utility/exchange.h:
 
@@ -2758,10 +2797,6 @@ CMakeFiles/4.1.2/CMakeCXXCompiler.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_function.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/nl_types.h:
-
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbytearraylist.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_floating_point.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_execution_policy.h:
@@ -2808,10 +2843,6 @@ CMakeFiles/4.1.2/CMakeCXXCompiler.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_array.h:
 
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qnamespace.h:
-
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbasicatomic.h:
-
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtWidgets.framework/Versions/A/Headers/QStackedWidget:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_null_pointer.h:
@@ -2852,6 +2883,8 @@ CMakeFiles/4.1.2/CMakeCXXCompiler.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/copy_cv.h:
 
+/Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.h:
+
 /opt/homebrew/share/cmake/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/can_extract_key.h:
@@ -2885,6 +2918,10 @@ CMakeFiles/4.1.2/CMakeCXXCompiler.cmake:
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_bounded_array.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__tuple/tuple_element.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qchar.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/q20iterator.h:
 
 /opt/homebrew/lib/cmake/Qt6Gui/Qt6QTuioTouchPluginTargets-release.cmake:
 
@@ -2962,6 +2999,8 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__numeric/iota.h:
 
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QJsonObject:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__numeric/gcd_lcm.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__numeric/exclusive_scan.h:
@@ -3010,6 +3049,10 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__memory/voidify.h:
 
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbytearraylist.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/nl_types.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__mbstate_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__memory/uninitialized_algorithms.h:
@@ -3039,6 +3082,12 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__memory/shared_ptr.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__algorithm/nth_element.h:
+
+/opt/homebrew/lib/cmake/Qt6Core/Qt6QDarwinCalendarPermissionPluginConfig.cmake:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbindingstorage.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__memory/out_ptr.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/_xlocale.h:
 
@@ -3095,6 +3144,8 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /opt/homebrew/lib/cmake/Qt6Gui/Qt6QWbmpPluginTargets.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__iterator/segmented_iterator.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qlocalsocket.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__memory/allocator_arg_t.h:
 
@@ -3318,6 +3369,12 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/underlying_type.h:
 
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbytearray.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__algorithm/copy_if.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__functional/invoke.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__concepts/swappable.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__iterator/iterator_traits.h:
@@ -3327,6 +3384,8 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__algorithm/swap_ranges.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__functional/binary_negate.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsondocument.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/remove_const_ref.h:
 
@@ -3369,6 +3428,10 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__assertion_handler:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__ranges/enable_borrowed_range.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qshareddata.h:
+
+/Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.h:
 
 /Users/sruthiramesh/Desktop/password-manager/LockBox/hibpchecker.cpp:
 
@@ -3414,6 +3477,8 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__concepts/destructible.h:
 
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QLocalServer:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/ostream.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/machine/_endian.h:
@@ -3426,10 +3491,6 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__cstddef/byte.h:
 
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QSslConfiguration:
-
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcalendar.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__iterator/default_sentinel.h:
 
 /opt/homebrew/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets.cmake:
@@ -3441,8 +3502,6 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/sys/_types/_size_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__iterator/next.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__iterator/prev.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__cstddef/ptrdiff_t.h:
 
@@ -3517,6 +3576,8 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__memory/raw_storage_iterator.h:
 
 /opt/homebrew/lib/cmake/Qt6Gui/Qt6QJpegPluginAdditionalTargetInfo.cmake:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcborvalue.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/sys/_types/_mbstate_t.h:
 
@@ -3708,6 +3769,10 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/remove_pointer.h:
 
+/opt/homebrew/lib/cmake/Qt6Network/Qt6NetworkTargets-release.cmake:
+
+/Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.cpp:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__iterator/insert_iterator.h:
 
 /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtSql.framework/Versions/A/Headers/qsqlquery.h:
@@ -3727,6 +3792,8 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__cstddef/max_align_t.h:
 
 /opt/homebrew/lib/cmake/Qt6Core/Qt6CoreTargets.cmake:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonvalue.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__concepts/different_from.h:
 
@@ -3767,6 +3834,8 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /opt/homebrew/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsConfigVersionImpl.cmake:
 
 /opt/homebrew/lib/cmake/Qt6DBusPrivate/Qt6DBusPrivateConfig.cmake:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcborcommon.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__algorithm/simd_utils.h:
 
@@ -3895,6 +3964,8 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /opt/homebrew/lib/cmake/Qt6Sql/Qt6SqlDependencies.cmake:
 
 /opt/homebrew/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginConfig.cmake:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonarray.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__format/format_string.h:
 
@@ -4042,6 +4113,8 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__algorithm/make_projected.h:
 
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qproperty.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__functional/reference_wrapper.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/cstddef:
@@ -4067,8 +4140,6 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /opt/homebrew/share/cmake/Modules/Compiler/CrayClang-DetermineCompiler.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__algorithm/copy.h:
-
-/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qatomic_cxx11.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__algorithm/fill.h:
 
@@ -4121,6 +4192,10 @@ CMakeFiles/4.1.2/CMakeSystem.cmake:
 /opt/homebrew/share/cmake/Modules/Platform/Linker/Apple-AppleClang.cmake:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__functional/operations.h:
+
+/opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qtcoreglobal.h:
+
+/Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/arm/_endian.h:
 

@@ -736,6 +736,8 @@
  /Users/sruthiramesh/Desktop/password-manager/LockBox/addpasswordpage.cpp
  /Users/sruthiramesh/Desktop/password-manager/LockBox/addpasswordpage.h
  /Users/sruthiramesh/Desktop/password-manager/LockBox/addpasswordpage.ui
+ /Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.cpp
+ /Users/sruthiramesh/Desktop/password-manager/LockBox/autofillmanager.h
  /Users/sruthiramesh/Desktop/password-manager/LockBox/autolockmanager.cpp
  /Users/sruthiramesh/Desktop/password-manager/LockBox/autolockmanager.h
  /Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles/4.1.2/CMakeCXXCompiler.cmake
@@ -747,6 +749,8 @@
  /Users/sruthiramesh/Desktop/password-manager/LockBox/database.h
  /Users/sruthiramesh/Desktop/password-manager/LockBox/hibpchecker.cpp
  /Users/sruthiramesh/Desktop/password-manager/LockBox/hibpchecker.h
+ /Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.cpp
+ /Users/sruthiramesh/Desktop/password-manager/LockBox/ipcserver.h
  /Users/sruthiramesh/Desktop/password-manager/LockBox/loginwindow.cpp
  /Users/sruthiramesh/Desktop/password-manager/LockBox/loginwindow.h
  /Users/sruthiramesh/Desktop/password-manager/LockBox/loginwindow.ui
@@ -759,12 +763,18 @@
  /Users/sruthiramesh/Desktop/password-manager/LockBox/passwordlist.ui
  /Users/sruthiramesh/Desktop/password-manager/LockBox/utils.cpp
  /Users/sruthiramesh/Desktop/password-manager/LockBox/utils.h
+ /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.cpp
+ /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultsession.h
+ /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.cpp
+ /Users/sruthiramesh/Desktop/password-manager/LockBox/vaultstate.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QByteArray
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QCryptographicHash
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QDebug
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QEvent
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QFlags
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QIODevice
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QJsonArray
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QJsonObject
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QList
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QMetaType
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/QObject
@@ -798,6 +808,8 @@
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbytearraylist.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qbytearrayview.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcalendar.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcborcommon.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcborvalue.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qchar.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcompare.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qcompare_impl.h
@@ -836,6 +848,11 @@
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qiodevicebase.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qiterable.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qiterator.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonarray.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsondocument.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonobject.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonparseerror.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qjsonvalue.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qlatin1stringview.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qline.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qlist.h
@@ -860,8 +877,11 @@
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qpair.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qpoint.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qprocessordetection.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qproperty.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qpropertyprivate.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qrect.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qrefcount.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qregularexpression.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qscopedpointer.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qscopeguard.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qset.h
@@ -911,6 +931,7 @@
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qtypes.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qurl.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qutf8stringview.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/quuid.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qvariant.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qvarlengtharray.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtCore.framework/Versions/A/Headers/qversiontagging.h
@@ -944,6 +965,8 @@
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtGui.framework/Versions/A/Headers/qtguiglobal.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtGui.framework/Versions/A/Headers/qtransform.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtGui.framework/Versions/A/Headers/qwindowdefs.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QLocalServer
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QLocalSocket
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QNetworkAccessManager
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QNetworkReply
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/QNetworkRequest
@@ -952,6 +975,8 @@
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qabstractsocket.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qhostaddress.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qhttpheaders.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qlocalserver.h
+ /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qlocalsocket.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qnetworkaccessmanager.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qnetworkreply.h
  /opt/homebrew/Cellar/qtbase/6.9.3/lib/QtNetwork.framework/Versions/A/Headers/qnetworkrequest.h

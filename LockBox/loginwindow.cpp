@@ -12,6 +12,12 @@
 #include <QInputDialog>
 #include "mainwindow.h"
 #include "autolockmanager.h"
+#include "vaultsession.h"
+#include "vaultstate.h"
+#include "ipcserver.h"
+
+static IPCServer *ipc = nullptr;
+
 
 LoginWindow::LoginWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -31,6 +37,10 @@ LoginWindow::LoginWindow(QWidget *parent)
     if (!Database::initialize()) {
         QMessageBox::critical(this, "Database Error",
                               "Failed to initialize database.");
+    }
+    if (!ipc) {
+        ipc = new IPCServer(this);
+        ipc->start();
     }
 
     connect(ui->loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
@@ -68,22 +78,41 @@ bool LoginWindow::validateUsername(const QString &username)
     }
     return true;
 }
-
 bool LoginWindow::validatePassword(const QString &password)
 {
+    // Length check
     if (password.length() < 8) {
-        QMessageBox::warning(this, "Weak Master Password", "Master password must be at least 8 characters long.");
+        QMessageBox::warning(this, "Weak Master Password",
+                             "Master password must be at least 8 characters long.");
         return false;
     }
 
-    int score = Utils::calculatePasswordStrength(password);
-    if (score < 5) {
-        QMessageBox::warning(this, "Weak Master Password",
-                             "Master password must contain uppercase, lowercase, numbers, and symbols.");
+    bool hasUpper = false;
+    bool hasLower = false;
+    bool hasDigit = false;
+    bool hasSymbol = false;
+
+    for (const QChar &ch : password) {
+        if (ch.isUpper()) hasUpper = true;
+        else if (ch.isLower()) hasLower = true;
+        else if (ch.isDigit()) hasDigit = true;
+        else hasSymbol = true;   // Anything not alphanumeric is a symbol
+    }
+
+    if (!hasUpper || !hasLower || !hasDigit || !hasSymbol) {
+        QString message = "Master password must contain:\n";
+        if (!hasUpper)  message += "- At least one uppercase letter\n";
+        if (!hasLower)  message += "- At least one lowercase letter\n";
+        if (!hasDigit)  message += "- At least one number\n";
+        if (!hasSymbol) message += "- At least one special symbol\n";
+
+        QMessageBox::warning(this, "Weak Master Password", message);
         return false;
     }
+
     return true;
 }
+
 
 // ------------------------- AUTHENTICATION -------------------------
 
@@ -298,11 +327,13 @@ void LoginWindow::onLoginClicked()
     if (!derivedKey.isEmpty()) {
         QMessageBox::information(this, "Login Successful", "Welcome back, " + username + "!");
         this->hide();
-
-        // ✅ Pass username as well
+         VaultState::setUnlocked(true);  // vault unlocked
+        VaultSession::setSession(username, derivedKey); 
+        // Pass username as well
         MainWindow *mainWindow = new MainWindow(derivedKey, username);
         mainWindow->setAttribute(Qt::WA_DeleteOnClose);
         mainWindow->show();
+
 
         // restart auto-lock after login
         autoLockManager->resetTimer();
@@ -347,6 +378,8 @@ void LoginWindow::onShowPasswordToggled(bool checked)
 void LoginWindow::handleAutoLock()
 {
     qDebug() << "[AutoLock] Timeout triggered — returning to login screen.";
+    VaultSession::clear();
+    VaultState::setUnlocked(false);  // 🔒 Mark vault as locked (auto-lock)
 
     // Close all top-level windows except the login page
     for (QWidget *w : QApplication::topLevelWidgets()) {
