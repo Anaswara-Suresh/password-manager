@@ -5,10 +5,10 @@
 #include <QString>
 #include <QRegularExpression>
 
-
 QSqlDatabase Database::m_db;
 
-bool Database::initialize() {
+bool Database::initialize()
+{
     if (QSqlDatabase::contains("lockbox_connection")) {
         m_db = QSqlDatabase::database("lockbox_connection");
     } else {
@@ -66,7 +66,6 @@ bool Database::createUserPasswordTable(const QString &username)
         return false;
     }
 
-    qDebug() << "Created password table for user:" << tableName;
     return true;
 }
 
@@ -103,9 +102,9 @@ bool Database::addPassword(const QString &username,
 
     QSqlQuery query(m_db);
     query.prepare(QString(
-        "INSERT INTO %1 (site, username, password, totp_secret, totp_enabled, entry_hash) "
-        "VALUES (?, ?, ?, NULL, 0, ?)"
-    ).arg(tableName));
+                      "INSERT INTO %1 (site, username, password, totp_secret, totp_enabled, entry_hash) "
+                      "VALUES (?, ?, ?, NULL, 0, ?)"
+                      ).arg(tableName));
 
     query.addBindValue(site);
     query.addBindValue(userCipher);
@@ -113,7 +112,7 @@ bool Database::addPassword(const QString &username,
     query.addBindValue(entryHash);
 
     if (!query.exec()) {
-        qDebug() << "Insert failed for" << tableName << ":" << query.lastError().text();
+        qDebug() << "Insert failed:" << query.lastError().text();
         return false;
     }
 
@@ -129,28 +128,28 @@ QList<QList<QVariant>> Database::fetchAllPasswords(const QString &username)
 
     QSqlQuery query(m_db);
     if (!query.exec(QString(
-            "SELECT id, site, username, password, totp_secret, totp_enabled FROM %1"
-        ).arg(tableName))) {
+                        "SELECT id, site, username, password, totp_secret, totp_enabled FROM %1"
+                        ).arg(tableName))) {
         qDebug() << "Fetch failed:" << query.lastError().text();
         return results;
     }
 
     while (query.next()) {
-        QList<QVariant> row;
-        row << query.value("id")
-            << query.value("site")
-            << query.value("username")
-            << query.value("password")
-            << query.value("totp_secret")
-            << query.value("totp_enabled");
-        results << row;
+        results.append({
+            query.value("id"),
+            query.value("site"),
+            query.value("username"),
+            query.value("password"),
+            query.value("totp_secret"),
+            query.value("totp_enabled")
+        });
     }
 
     return results;
 }
 
 QList<QList<QVariant>> Database::fetchPasswordsBySite(const QString &username,
-                                                     const QString &filter)
+                                                      const QString &filter)
 {
     QList<QList<QVariant>> results;
 
@@ -159,9 +158,9 @@ QList<QList<QVariant>> Database::fetchPasswordsBySite(const QString &username,
 
     QSqlQuery query(m_db);
     query.prepare(QString(
-        "SELECT id, site, username, password, totp_secret, totp_enabled "
-        "FROM %1 WHERE site LIKE :pattern"
-    ).arg(tableName));
+                      "SELECT id, site, username, password, totp_secret, totp_enabled "
+                      "FROM %1 WHERE site LIKE :pattern"
+                      ).arg(tableName));
     query.bindValue(":pattern", "%" + filter + "%");
 
     if (!query.exec()) {
@@ -170,14 +169,14 @@ QList<QList<QVariant>> Database::fetchPasswordsBySite(const QString &username,
     }
 
     while (query.next()) {
-        QList<QVariant> row;
-        row << query.value("id")
-            << query.value("site")
-            << query.value("username")
-            << query.value("password")
-            << query.value("totp_secret")
-            << query.value("totp_enabled");
-        results.append(row);
+        results.append({
+            query.value("id"),
+            query.value("site"),
+            query.value("username"),
+            query.value("password"),
+            query.value("totp_secret"),
+            query.value("totp_enabled")
+        });
     }
 
     return results;
@@ -194,8 +193,8 @@ bool Database::updatePassword(const QString &username,
 
     QSqlQuery query(m_db);
     query.prepare(QString(
-        "UPDATE %1 SET site=?, username=?, password=? WHERE id=?"
-    ).arg(tableName));
+                      "UPDATE %1 SET site=?, username=?, password=? WHERE id=?"
+                      ).arg(tableName));
 
     query.addBindValue(site);
     query.addBindValue(user);
@@ -215,8 +214,8 @@ bool Database::updateTOTP(const QString &username,
 
     QSqlQuery query(m_db);
     query.prepare(QString(
-        "UPDATE %1 SET totp_secret=?, totp_enabled=? WHERE id=?"
-    ).arg(tableName));
+                      "UPDATE %1 SET totp_secret=?, totp_enabled=? WHERE id=?"
+                      ).arg(tableName));
 
     query.addBindValue(totpCipher);
     query.addBindValue(enabled);
@@ -241,10 +240,12 @@ QSqlDatabase &Database::getDatabase()
 {
     return m_db;
 }
+
 QList<QVariantMap> Database::getFullVault(const QString &username)
 {
     QList<QVariantMap> list;
-    QString table = QString("passwords_%1").arg(username).replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+    QString table = QString("passwords_%1").arg(username)
+                        .replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
 
     QSqlQuery q(m_db);
     q.prepare(QString("SELECT id, site, username, password FROM %1").arg(table));
@@ -264,28 +265,38 @@ QList<QVariantMap> Database::getFullVault(const QString &username)
     return list;
 }
 
-bool Database::updateVaultRow(const QString &username,int id,const QByteArray &cipherUser,const QByteArray &cipherPass)
+bool Database::updateVaultRow(const QString &username,
+                              int id,
+                              const QByteArray &cipherUser,
+                              const QByteArray &cipherPass)
 {
-    QString table = QString("passwords_%1").arg(username).replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+    QString table = QString("passwords_%1").arg(username)
+    .replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
 
     QSqlQuery q(m_db);
-    q.prepare(QString("UPDATE %1 SET username = ?, password = ? WHERE id = ?").arg(table));
+    q.prepare(QString(
+                  "UPDATE %1 SET username = ?, password = ? WHERE id = ?"
+                  ).arg(table));
+
     q.addBindValue(cipherUser);
     q.addBindValue(cipherPass);
     q.addBindValue(id);
 
     return q.exec();
 }
-QList<QVariantMap> Database::findBySite(const QString &username, const QString &site)
+
+QList<QVariantMap> Database::findBySite(const QString &username,
+                                        const QString &site)
 {
     QList<QVariantMap> results;
 
-    QString table = QString("passwords_%1")
-                        .arg(username)
+    QString table = QString("passwords_%1").arg(username)
                         .replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
 
     QSqlQuery q(m_db);
-    q.prepare(QString("SELECT id, site, username, password FROM %1 WHERE site LIKE :pattern").arg(table));
+    q.prepare(QString(
+                  "SELECT id, site, username, password FROM %1 WHERE site LIKE :pattern"
+                  ).arg(table));
     q.bindValue(":pattern", "%" + site + "%");
 
     if (!q.exec()) {
@@ -303,4 +314,25 @@ QList<QVariantMap> Database::findBySite(const QString &username, const QString &
     }
 
     return results;
+}
+
+/* -------- Transaction support (for import/export) -------- */
+
+bool Database::beginTransaction()
+{
+    if (!m_db.isOpen())
+        return false;
+    return m_db.transaction();
+}
+
+void Database::commit()
+{
+    if (m_db.isOpen())
+        m_db.commit();
+}
+
+void Database::rollback()
+{
+    if (m_db.isOpen())
+        m_db.rollback();
 }

@@ -12,7 +12,8 @@ class AutoLockManager : public QObject
     Q_OBJECT
 
 public:
-    explicit AutoLockManager(QObject *parent = nullptr, int timeoutMs = 100000000000000);
+    explicit AutoLockManager(QObject *parent = nullptr,
+                             qint64 timeoutMs = 5 * 60 * 1000); // 5 minutes
     void resetTimer();  // manually reset timer
     void start();       // start monitoring
     void stop();        // stop monitoring
@@ -25,7 +26,7 @@ protected:
 
 private:
     QTimer *m_timer;
-    int m_timeoutMs;
+    qint64 m_timeoutMs;
 };
 
 #endif // AUTOLOCKMANAGER_H

@@ -1,6 +1,6 @@
 #include "autolockmanager.h"
 
-AutoLockManager::AutoLockManager(QObject *parent, int timeoutMs)
+AutoLockManager::AutoLockManager(QObject *parent, qint64 timeoutMs)
     : QObject(parent),
     m_timeoutMs(timeoutMs)
 {
@@ -35,13 +35,12 @@ bool AutoLockManager::eventFilter(QObject *obj, QEvent *event)
 
 void AutoLockManager::resetTimer()
 {
-    if (m_timer->isActive())
-        m_timer->start(m_timeoutMs); // restart countdown
+    m_timer->start(m_timeoutMs);
 }
 
 void AutoLockManager::start()
 {
-    m_timer->start();
+    m_timer->start(m_timeoutMs);
 }
 
 void AutoLockManager::stop()

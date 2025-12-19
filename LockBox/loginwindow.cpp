@@ -22,7 +22,7 @@ static IPCServer *ipc = nullptr;
 LoginWindow::LoginWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::LoginWindow),
-    autoLockManager(new AutoLockManager(this, 30000))
+    autoLockManager(new AutoLockManager(this))
 {
     ui->setupUi(this);
     setWindowTitle("LockBox - Secure Login");
