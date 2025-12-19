@@ -276,3 +276,21 @@ bool Database::updateVaultRow(const QString &username,int id,const QByteArray &c
 
     return q.exec();
 }
+bool Database::beginTransaction()
+{
+    if (!m_db.isOpen())
+        return false;
+    return m_db.transaction();
+}
+
+void Database::commit()
+{
+    if (m_db.isOpen())
+        m_db.commit();
+}
+
+void Database::rollback()
+{
+    if (m_db.isOpen())
+        m_db.rollback();
+}

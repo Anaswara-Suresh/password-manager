@@ -1,5 +1,0 @@
-/Users/amrithashyam/Desktop/password-manager/LockBox/build/CMakeFiles/LockBox.dir
-/Users/amrithashyam/Desktop/password-manager/LockBox/build/CMakeFiles/edit_cache.dir
-/Users/amrithashyam/Desktop/password-manager/LockBox/build/CMakeFiles/rebuild_cache.dir
-/Users/amrithashyam/Desktop/password-manager/LockBox/build/CMakeFiles/LockBox_autogen_timestamp_deps.dir
-/Users/amrithashyam/Desktop/password-manager/LockBox/build/CMakeFiles/LockBox_autogen.dir
