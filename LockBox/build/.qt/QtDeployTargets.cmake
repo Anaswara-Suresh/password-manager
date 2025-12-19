@@ -1,4 +1,0 @@
-set(__QT_DEPLOY_TARGET_LockBox_FILE /Users/sruthiramesh/Desktop/password-manager/LockBox/build/LockBox.app/Contents/MacOS/LockBox)
-set(__QT_DEPLOY_TARGET_LockBox_TYPE EXECUTABLE)
-set(__QT_DEPLOY_TARGET_lockbox_native_host_FILE /Users/sruthiramesh/Desktop/password-manager/LockBox/build/bin/lockbox_native_host)
-set(__QT_DEPLOY_TARGET_lockbox_native_host_TYPE EXECUTABLE)

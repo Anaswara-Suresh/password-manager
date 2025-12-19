@@ -405,3 +405,4 @@ void LoginWindow::resetFields()
     ui->usernameLineEdit->clear();
     ui->passwordLineEdit->clear();
 }
+

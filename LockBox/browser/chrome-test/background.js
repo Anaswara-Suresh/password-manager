@@ -11,7 +11,7 @@ function getCredentialsForTab(tab) {
 
   chrome.runtime.sendNativeMessage(
     "com.lockbox.nativehost",
-    {
+    { 
       version: 1,
       action: "getCredentials",
       requestId: "tab-" + tab.id + "-" + Date.now(),
@@ -35,7 +35,6 @@ function getCredentialsForTab(tab) {
         return;
       }
 
-      // For now, just use the first entry
       const entry = entries[0];
 
       chrome.tabs.sendMessage(tab.id, {

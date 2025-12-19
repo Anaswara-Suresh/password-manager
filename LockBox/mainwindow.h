@@ -5,6 +5,10 @@
 #include <QStackedWidget>
 #include <QByteArray>
 #include <QString>
+#include <QClipboard>
+#include <QTimer>
+#include <QApplication>
+
 #include "passwordlist.h"
 #include "addpasswordpage.h"
 
@@ -33,6 +37,7 @@ private:
     QStackedWidget *stackedWidget;
     PasswordList *passwordListPage;
     AddPasswordPage *addPasswordWindow = nullptr;
+    void copyToSecureClipboard(const QString &secret);
 
 private slots:
     void onViewPasswordsClicked();

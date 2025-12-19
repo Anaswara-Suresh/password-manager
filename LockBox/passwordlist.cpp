@@ -3,26 +3,32 @@
 #include "database.h"
 #include "crypto.h"
 #include "hibpchecker.h"
-
+#include "vault_exporter.h"
+#include "vault_importer.h"
+#include "totp.h"
+#include "totpdialog.h"
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QHBoxLayout>
-#include <QPushButton>
+#include <QToolButton>
+#include <QMenu>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
+#include <QFileDialog>
+
 
 PasswordList::PasswordList(const QByteArray &key, const QString &username, QWidget *parent)
-    : QWidget(parent), ui(new Ui::PasswordList), masterKey(key), currentUsername(username)
+    : QWidget(parent),
+      ui(new Ui::PasswordList),
+      masterKey(key),
+      currentUsername(username)
 {
     ui->setupUi(this);
     ui->verticalLayout->setContentsMargins(15, 15, 15, 15);
-    this->setMinimumSize(700, 400);
-    ui->tableWidget->resizeColumnsToContents();
-
-    ui->tableWidget->setColumnWidth(4, qMax(300, ui->tableWidget->columnWidth(4)));
+    setMinimumSize(700, 400);
 
     connect(ui->searchButton, &QPushButton::clicked, this, &PasswordList::onSearchClicked);
     connect(ui->searchEdit, &QLineEdit::textChanged, this, &PasswordList::onSearchTextChanged);
@@ -42,101 +48,154 @@ void PasswordList::loadPasswords(const QString &filter)
 {
     ui->tableWidget->clear();
     ui->tableWidget->setColumnCount(5);
-    QStringList headers = {"ID", "Site", "Username", "Password", "Actions"};
-    ui->tableWidget->setHorizontalHeaderLabels(headers);
+    ui->tableWidget->setHorizontalHeaderLabels(
+        {"ID", "Site", "Username", "Password", "Actions"});
+    ui->tableWidget->setColumnHidden(0, true);
     ui->tableWidget->setRowCount(0);
 
-    QList<QList<QVariant>> all;
-
-
-    if (filter.isEmpty()) {
-        all = Database::fetchAllPasswords(currentUsername);
-    } else {
-        all = Database::fetchPasswordsBySite(currentUsername, filter);
-    }
+    QList<QList<QVariant>> rows =
+        filter.isEmpty()
+            ? Database::fetchAllPasswords(currentUsername)
+            : Database::fetchPasswordsBySite(currentUsername, filter);
 
     int row = 0;
-    for (const QList<QVariant> &record : all) {
-        int id = record[0].toInt();
-        QByteArray siteBytes = record[1].toByteArray();
-        QByteArray userCipher = record[2].toByteArray();
-        QByteArray passCipher = record[3].toByteArray();
+    for (const QList<QVariant> &record : rows) {
 
-        QString sitePlain = QString::fromUtf8(siteBytes);
-        QString userPlain = Crypto::decrypt(userCipher, masterKey);
-        QString passPlain = Crypto::decrypt(passCipher, masterKey);
+        int id = record[0].toInt();
+        QString site = record[1].toString();
+        QString user = Crypto::decrypt(record[2].toByteArray(), masterKey);
+        QString pass = Crypto::decrypt(record[3].toByteArray(), masterKey);
+
+        QByteArray totpCipher = record[4].toByteArray();
+        bool totpEnabled = record[5].toInt();
+
+        QString totpSecret;
+        if (totpEnabled && !totpCipher.isEmpty())
+            totpSecret = Crypto::decrypt(totpCipher, masterKey);
 
         ui->tableWidget->insertRow(row);
         ui->tableWidget->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
-        ui->tableWidget->setItem(row, 1, new QTableWidgetItem(sitePlain));
-        ui->tableWidget->setItem(row, 2, new QTableWidgetItem(userPlain));
-        
-        QTableWidgetItem *passwordItem = new QTableWidgetItem("********");
-        passwordItem->setData(Qt::UserRole, passPlain);
-        ui->tableWidget->setItem(row, 3, passwordItem);
+        ui->tableWidget->setItem(row, 1, new QTableWidgetItem(site));
+        ui->tableWidget->setItem(row, 2, new QTableWidgetItem(user));
 
+        QTableWidgetItem *pwItem = new QTableWidgetItem("********");
+        pwItem->setData(Qt::UserRole, pass);
+        ui->tableWidget->setItem(row, 3, pwItem);
+
+      
         QWidget *actionWidget = new QWidget(this);
         QHBoxLayout *layout = new QHBoxLayout(actionWidget);
         layout->setContentsMargins(0, 0, 0, 0);
-
-        QPushButton *editBtn = new QPushButton("✏️ Edit");
-        QPushButton *delBtn = new QPushButton("🗑️ Delete");
-        QPushButton *checkBtn = new QPushButton("🔍 Check");
-
-        layout->addWidget(editBtn);
-        layout->addWidget(delBtn);
-        layout->addWidget(checkBtn);
-
-
-        layout->setSpacing(8);
         layout->setAlignment(Qt::AlignCenter);
 
-        ui->tableWidget->setCellWidget(row, 4, actionWidget);
+        QToolButton *settingsBtn = new QToolButton(this);
+        settingsBtn->setText("⚙️");
+        settingsBtn->setPopupMode(QToolButton::InstantPopup);
 
-        // Connect buttons
-        editBtn->setProperty("entryId", id);
-        delBtn->setProperty("entryId", id);
-        connect(editBtn, &QPushButton::clicked, this, &PasswordList::onEditButtonClicked);
-        connect(delBtn, &QPushButton::clicked, this, &PasswordList::onDeleteButtonClicked);
+        QMenu *menu = new QMenu(settingsBtn);
 
-        // Manual HIBP check for this row
-        connect(checkBtn, &QPushButton::clicked, this, [=]() {
-            QString password = ui->tableWidget->item(row, 3)->text();
+        // Copy password
+        QAction *copyPass = menu->addAction("📋 Copy Password");
+        connect(copyPass, &QAction::triggered, this, [=]() {
+            emit copyRequested(pass);
+            updateStatus("Password copied securely");
+        });
+
+        menu->addSeparator();
+
+        
+        if (!totpEnabled) {
+            QAction *enableTotp = menu->addAction("🔐 Enable TOTP");
+            connect(enableTotp, &QAction::triggered, this, [=]() {
+                bool ok;
+                QString secret = QInputDialog::getText(
+                    this,
+                    "Enable TOTP",
+                    "Enter TOTP secret (Base32):",
+                    QLineEdit::Normal,
+                    "",
+                    &ok);
+
+                if (!ok || secret.trimmed().isEmpty())
+                    return;
+
+                QByteArray cipher = Crypto::encrypt(secret.trimmed(), masterKey);
+                if (Database::updateTOTP(currentUsername, id, cipher, 1)) {
+                    QMessageBox::information(this, "Success", "TOTP enabled.");
+                    loadPasswords();
+                }
+            });
+        } else {
+            // Copy TOTP (only if enabled)
+            QAction *showTotp = menu->addAction("📟 Show TOTP");
+            connect(showTotp, &QAction::triggered, this, [=]() {
+                TotpDialog *dlg = new TotpDialog(totpSecret, this);
+                dlg->exec();
+            });
+            QAction *disableTotp = menu->addAction("🚫 Disable TOTP");
+            connect(disableTotp, &QAction::triggered, this, [=]() {
+                if (QMessageBox::question(
+                        this,
+                        "Disable TOTP",
+                        "Disable TOTP for this entry?")
+                    != QMessageBox::Yes)
+                    return;
+
+                if (Database::updateTOTP(currentUsername, id, QByteArray(), 0)) {
+                    QMessageBox::information(this, "Disabled", "TOTP disabled.");
+                    loadPasswords();
+                }
+            });
+        }
+
+        menu->addSeparator();
+
+        QAction *edit = menu->addAction("✏️ Edit");
+        edit->setProperty("entryId", id);
+        connect(edit, &QAction::triggered, this, &PasswordList::onEditButtonClicked);
+
+        QAction *del = menu->addAction("🗑️ Delete");
+        del->setProperty("entryId", id);
+        connect(del, &QAction::triggered, this, &PasswordList::onDeleteButtonClicked);
+
+        QAction *check = menu->addAction("🔍 Check Breach");
+        connect(check, &QAction::triggered, this, [=]() {
             HIBPChecker *checker = new HIBPChecker(this);
-            ui->statusLabel->setText(QString("Checking password for %1...").arg(sitePlain));
+            updateStatus("Checking password...");
 
             connect(checker, &HIBPChecker::resultReady, this, [=](bool pwned, int count) {
-                if (pwned) {
-                    ui->tableWidget->item(row, 3)->setBackground(QColor("#7f1d1d"));
-                    ui->tableWidget->item(row, 3)->setToolTip(
-                        QString("⚠️ Found in data breaches (%1 times)!").arg(count));
-                } else {
-                    ui->tableWidget->item(row, 3)->setBackground(QColor("#1f1f1f"));
-                    ui->tableWidget->item(row, 3)->setToolTip("✅ Safe (no known breaches)");
-                }
-                ui->statusLabel->setText("Check complete ");
+                updateStatus(pwned
+                                 ? QString("⚠️ Found in %1 breaches").arg(count)
+                                 : "✅ Password is safe");
                 checker->deleteLater();
             });
-            checker->checkPassword(password);
+
+            checker->checkPassword(pass);
         });
+
+        settingsBtn->setMenu(menu);
+        layout->addWidget(settingsBtn);
+        ui->tableWidget->setCellWidget(row, 4, actionWidget);
 
         row++;
     }
 
     ui->tableWidget->resizeColumnsToContents();
-    ui->tableWidget->setColumnWidth(4, qMax(300, ui->tableWidget->columnWidth(4)));
-
 }
 
 void PasswordList::onEditButtonClicked()
 {
-    QPushButton *button = qobject_cast<QPushButton*>(sender());
-    if (!button) return;
-    int id = button->property("entryId").toInt();
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (!action) return;
+
+    int id = action->property("entryId").toInt();
     QString tableName = QString("passwords_%1").arg(currentUsername);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
 
     QSqlQuery query(QSqlDatabase::database("lockbox_connection"));
-    query.prepare(QString("SELECT site, username, password FROM %1 WHERE id = :id").arg(tableName));
+    query.prepare(QString(
+        "SELECT site, username, password FROM %1 WHERE id = :id"
+    ).arg(tableName));
     query.bindValue(":id", id);
 
     if (!query.exec() || !query.next()) {
@@ -144,62 +203,58 @@ void PasswordList::onEditButtonClicked()
         return;
     }
 
-    QString sitePlain = QString::fromUtf8(query.value("site").toByteArray());
-    QString userPlain = Crypto::decrypt(query.value("username").toByteArray(), masterKey);
-    QString passPlain = Crypto::decrypt(query.value("password").toByteArray(), masterKey);
+    QString sitePlain = query.value("site").toString();
+    QString userPlain = Crypto::decrypt(
+        query.value("username").toByteArray(), masterKey);
+    QString passPlain = Crypto::decrypt(
+        query.value("password").toByteArray(), masterKey);
 
     bool ok;
-    QString newSite = QInputDialog::getText(this, "Edit Site", "Site:", QLineEdit::Normal, sitePlain, &ok);
+    QString newSite = QInputDialog::getText(
+        this, "Edit Site", "Site:",
+        QLineEdit::Normal, sitePlain, &ok);
     if (!ok) return;
 
-    QString newUser = QInputDialog::getText(this, "Edit Username", "Username:", QLineEdit::Normal, userPlain, &ok);
+    QString newUser = QInputDialog::getText(
+        this, "Edit Username", "Username:",
+        QLineEdit::Normal, userPlain, &ok);
     if (!ok) return;
 
-    QString newPass = QInputDialog::getText(this, "Edit Password", "Password:", QLineEdit::Normal, passPlain, &ok);
+    QString newPass = QInputDialog::getText(
+        this, "Edit Password", "Password:",
+        QLineEdit::Normal, passPlain, &ok);
     if (!ok) return;
 
     QByteArray siteBytes = newSite.toUtf8();
     QByteArray userCipher = Crypto::encrypt(newUser, masterKey);
     QByteArray passCipher = Crypto::encrypt(newPass, masterKey);
 
-    if (Database::updatePassword(currentUsername, id, siteBytes, userCipher, passCipher)) {
-        QMessageBox::information(this, "Updated", "Password entry updated successfully!");
-        refreshTable();
+    if (Database::updatePassword(
+            currentUsername, id, siteBytes, userCipher, passCipher)) {
+        QMessageBox::information(this, "Updated", "Entry updated successfully!");
+        loadPasswords();
     } else {
         QMessageBox::critical(this, "Error", "Failed to update entry.");
     }
 }
 
+
 void PasswordList::onDeleteButtonClicked()
 {
-    QPushButton *button = qobject_cast<QPushButton*>(sender());
-    if (!button) return;
-    int id = button->property("entryId").toInt();
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (!action) return;
+    int id = action->property("entryId").toInt();
 
-    if (QMessageBox::question(this, "Confirm", "Delete this entry?") == QMessageBox::Yes) {
-        if (Database::deletePassword(currentUsername, id)) {
-            QMessageBox::information(this, "Deleted", "Entry removed successfully.");
-            refreshTable();
-        } else {
-            QMessageBox::critical(this, "Error", "Failed to delete entry.");
-        }
+    if (QMessageBox::question(this, "Confirm", "Delete this entry?")
+        == QMessageBox::Yes) {
+        Database::deletePassword(currentUsername, id);
+        loadPasswords();
     }
-}
-
-void PasswordList::refreshTable()
-{
-    loadPasswords();
-}
-
-void PasswordList::refreshPasswords()
-{
-    loadPasswords();
 }
 
 void PasswordList::onSearchClicked()
 {
-    QString filter = ui->searchEdit->text().trimmed();
-    loadPasswords(filter);
+    loadPasswords(ui->searchEdit->text().trimmed());
 }
 
 void PasswordList::onSearchTextChanged(const QString &text)
@@ -213,21 +268,29 @@ void PasswordList::onCheckAllWithHIBP()
     int rows = ui->tableWidget->rowCount();
 
     for (int row = 0; row < rows; ++row) {
-        QString password = ui->tableWidget->item(row, 3)->text();
-        QString site = ui->tableWidget->item(row, 1)->text();
+        QTableWidgetItem *pwItem = ui->tableWidget->item(row, 3);
+        if (!pwItem) continue;
+
+        QString password = pwItem->data(Qt::UserRole).toString();
 
         HIBPChecker *checker = new HIBPChecker(this);
+        checker->setProperty("row", row);
+
         connect(checker, &HIBPChecker::resultReady, this, [=](bool pwned, int count) {
+            int r = checker->property("row").toInt();
+
             if (pwned) {
-                ui->tableWidget->item(row, 3)->setBackground(QColor("#7f1d1d"));
-                ui->tableWidget->item(row, 3)->setToolTip(
+                ui->tableWidget->item(r, 3)->setBackground(QColor("#7f1d1d"));
+                ui->tableWidget->item(r, 3)->setToolTip(
                     QString("⚠️ Found in data breaches (%1 times)!").arg(count));
             } else {
-                ui->tableWidget->item(row, 3)->setBackground(QColor("#1f1f1f"));
-                ui->tableWidget->item(row, 3)->setToolTip("✅ Safe");
+                ui->tableWidget->item(r, 3)->setBackground(QColor("#1f1f1f"));
+                ui->tableWidget->item(r, 3)->setToolTip("✅ Safe");
             }
-            if (row == rows - 1)
-                ui->statusLabel->setText("All passwords checked ");
+
+            if (r == rows - 1)
+                ui->statusLabel->setText("All passwords checked");
+
             checker->deleteLater();
         });
 
@@ -235,30 +298,103 @@ void PasswordList::onCheckAllWithHIBP()
     }
 }
 
-void PasswordList::updateStatus(const QString &message)
+void PasswordList::updateStatus(const QString &msg)
 {
-    ui->statusLabel->setText(message);
+    ui->statusLabel->setText(msg);
 
-    QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect(this);
-    ui->statusLabel->setGraphicsEffect(effect);
+    QGraphicsOpacityEffect *fx = new QGraphicsOpacityEffect(this);
+    ui->statusLabel->setGraphicsEffect(fx);
 
-    QPropertyAnimation *animation = new QPropertyAnimation(effect, "opacity");
-    animation->setDuration(300);
-    animation->setStartValue(0.0);
-    animation->setEndValue(1.0);
-    animation->start(QPropertyAnimation::DeleteWhenStopped);
+    QPropertyAnimation *anim = new QPropertyAnimation(fx, "opacity");
+    anim->setDuration(300);
+    anim->setStartValue(0.0);
+    anim->setEndValue(1.0);
+    anim->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
 void PasswordList::onPasswordCellClicked(int row, int column)
 {
     if (column == 3) {
         QTableWidgetItem *item = ui->tableWidget->item(row, column);
-        if (item) {
-            if (item->text() == "********") {
-                item->setText(item->data(Qt::UserRole).toString());
-            } else {
-                item->setText("********");
-            }
-        }
+        if (!item) return;
+        item->setText(item->text() == "********"
+                          ? item->data(Qt::UserRole).toString()
+                          : "********");
     }
+}
+
+void PasswordList::on_btnExportVault_clicked()
+{
+    QString path = QFileDialog::getSaveFileName(
+        this,
+        "Export Vault",
+        "",
+        "LockBox Vault (*.lockbox)"
+        );
+
+    if (path.isEmpty())
+        return;
+
+    if (!VaultExporter::exportVault(currentUsername, masterKey, path)) {
+        QMessageBox::critical(this, "Export Failed",
+                              "Could not export vault.");
+        return;
+    }
+    ui->statusLabel->setText("Vault exported successfully");
+
+}
+
+void PasswordList::on_btnImportVault_clicked()
+{
+    QString path = QFileDialog::getOpenFileName(
+        this,
+        "Import Vault",
+        "",
+        "LockBox Vault (*.lockbox)"
+        );
+
+    if (path.isEmpty())
+        return;
+
+    QString oldUser = QInputDialog::getText(
+        this, "Old Username", "Username:");
+
+    if (oldUser.isEmpty())
+        return;
+
+    QString oldPass = QInputDialog::getText(
+        this,
+        "Old Master Password",
+        "Password:",
+        QLineEdit::Password
+        );
+
+    if (oldPass.isEmpty())
+        return;
+
+    if (!VaultImporter::importVault(
+            path,
+            oldUser,
+            oldPass,
+            masterKey,
+            currentUsername)) {
+
+        QMessageBox::critical(this, "Import Failed",
+                              "Invalid credentials or corrupted vault.");
+        return;
+    }
+
+    loadPasswords();  // reload table
+    ui->statusLabel->setText("Vault imported successfully");
+}
+
+
+void PasswordList::refreshPasswords()
+{
+    loadPasswords();
+}
+
+void PasswordList::refreshTable()
+{
+    loadPasswords();
 }

@@ -1,8 +1,0 @@
-/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles/LockBox.dir
-/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles/lockbox_native_host.dir
-/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles/edit_cache.dir
-/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles/rebuild_cache.dir
-/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles/LockBox_autogen_timestamp_deps.dir
-/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles/LockBox_autogen.dir
-/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles/lockbox_native_host_autogen_timestamp_deps.dir
-/Users/sruthiramesh/Desktop/password-manager/LockBox/build/CMakeFiles/lockbox_native_host_autogen.dir

@@ -26,6 +26,10 @@ set(SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/ipcserver.cpp"
     "${CMAKE_SOURCE_DIR}/vaultsession.cpp"
     "${CMAKE_SOURCE_DIR}/vaultstate.cpp"
+    "${CMAKE_SOURCE_DIR}/vault_exporter.cpp"
+    "${CMAKE_SOURCE_DIR}/vault_importer.cpp"
+    "${CMAKE_SOURCE_DIR}/totp.cpp"
+    "${CMAKE_SOURCE_DIR}/totpdialog.cpp"
 )
 
 # ---- Header files ----
@@ -39,6 +43,10 @@ set(HEADER_FILES
     "${CMAKE_SOURCE_DIR}/passwordlist.h"
     "${CMAKE_SOURCE_DIR}/autolockmanager.h"
     "${CMAKE_SOURCE_DIR}/hibpchecker.h"
+    "${CMAKE_SOURCE_DIR}/vault_exporter.h"
+    "${CMAKE_SOURCE_DIR}/vault_importer.h"
+    "${CMAKE_SOURCE_DIR}/totp.h"
+    "${CMAKE_SOURCE_DIR}/totpdialog.h"
 
 
 )
