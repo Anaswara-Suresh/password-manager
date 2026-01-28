@@ -7,18 +7,26 @@
 
 namespace Crypto {
 
-
+/* ---------- Init ---------- */
 bool initialize();
 
+/* ---------- Key Derivation (KEK) ---------- */
 QByteArray deriveKey(const QString &masterPassword, const QByteArray &salt);
 
-QByteArray registerNewUser(const QString &masterPassword, QByteArray &outSalt, QByteArray &outVerificationCiphertext);
+/* ---------- DEK Handling ---------- */
+QByteArray generateDEK();
+QByteArray encryptDEK(const QByteArray &dek, const QByteArray &kek);
+QByteArray decryptDEK(const QByteArray &encryptedDek, const QByteArray &kek);
 
-QByteArray encrypt(const QString &plaintext, const QByteArray &derivedKey);
-QString decrypt(const QByteArray &ciphertext_with_nonce, const QByteArray &derivedKey);
+/* ---------- Data Encryption (uses DEK) ---------- */
+QByteArray encrypt(const QString &plaintext, const QByteArray &dek);
+QString decrypt(const QByteArray &ciphertext_with_nonce, const QByteArray &dek);
 
-bool verifyMasterPassword(const QString &masterPassword, const QByteArray &storedSalt, const QByteArray &storedCiphertext);
+/* ---------- User Registration / Verification ---------- */
+bool verifyMasterPassword(const QString &masterPassword,
+                          const QByteArray &storedSalt,
+                          const QByteArray &storedVerificationCiphertext);
 
 }
 
-#endif
+#endif // CRYPTO_H

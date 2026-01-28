@@ -13,7 +13,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql Network)
 # ---- Source files ----
 set(SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/main.cpp"
-    "${CMAKE_SOURCE_DIR}/mainwindow.cpp"      
+    "${CMAKE_SOURCE_DIR}/mainwindow.cpp"
     "${CMAKE_SOURCE_DIR}/addpasswordpage.cpp"
     "${CMAKE_SOURCE_DIR}/database.cpp"
     "${CMAKE_SOURCE_DIR}/utils.cpp"
@@ -22,6 +22,14 @@ set(SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/passwordlist.cpp"
     "${CMAKE_SOURCE_DIR}/autolockmanager.cpp"
     "${CMAKE_SOURCE_DIR}/hibpchecker.cpp"
+    "${CMAKE_SOURCE_DIR}/autofillmanager.cpp"
+    "${CMAKE_SOURCE_DIR}/ipcserver.cpp"
+    "${CMAKE_SOURCE_DIR}/vaultsession.cpp"
+    "${CMAKE_SOURCE_DIR}/vaultstate.cpp"
+    "${CMAKE_SOURCE_DIR}/vault_exporter.cpp"
+    "${CMAKE_SOURCE_DIR}/vault_importer.cpp"
+    "${CMAKE_SOURCE_DIR}/totp.cpp"
+    "${CMAKE_SOURCE_DIR}/totpdialog.cpp"
 )
 
 # ---- Header files ----
@@ -35,12 +43,17 @@ set(HEADER_FILES
     "${CMAKE_SOURCE_DIR}/passwordlist.h"
     "${CMAKE_SOURCE_DIR}/autolockmanager.h"
     "${CMAKE_SOURCE_DIR}/hibpchecker.h"
+    "${CMAKE_SOURCE_DIR}/vault_exporter.h"
+    "${CMAKE_SOURCE_DIR}/vault_importer.h"
+    "${CMAKE_SOURCE_DIR}/totp.h"
+    "${CMAKE_SOURCE_DIR}/totpdialog.h"
+
 
 )
 
 # ---- UI files ----
 set(UI_FILES
-    "${CMAKE_SOURCE_DIR}/mainwindow.ui"         
+    "${CMAKE_SOURCE_DIR}/mainwindow.ui"
     "${CMAKE_SOURCE_DIR}/addpasswordpage.ui"
     "${CMAKE_SOURCE_DIR}/loginwindow.ui"
     "${CMAKE_SOURCE_DIR}/passwordlist.ui"
@@ -109,3 +122,23 @@ configure_file(${CMAKE_SOURCE_DIR}/LockBox_Logo.png LockBox_Logo.png COPYONLY)
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(LockBox)
 endif()
+
+# Native Messaging Host (Browser Integration)
+
+add_executable(lockbox_native_host
+    "${CMAKE_SOURCE_DIR}/nativehost/main.cpp"
+    "${CMAKE_SOURCE_DIR}/vaultstate.cpp"
+)
+
+target_include_directories(lockbox_native_host PRIVATE
+    "${CMAKE_SOURCE_DIR}"
+)
+
+target_link_libraries(lockbox_native_host PRIVATE
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Network
+)
+
+set_target_properties(lockbox_native_host PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)

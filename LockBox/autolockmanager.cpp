@@ -1,6 +1,6 @@
 #include "autolockmanager.h"
 
-AutoLockManager::AutoLockManager(QObject *parent, int timeoutMs)
+AutoLockManager::AutoLockManager(QObject *parent, qint64 timeoutMs)
     : QObject(parent),
     m_timeoutMs(timeoutMs)
 {

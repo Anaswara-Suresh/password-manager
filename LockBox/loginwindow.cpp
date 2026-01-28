@@ -12,6 +12,12 @@
 #include <QInputDialog>
 #include "mainwindow.h"
 #include "autolockmanager.h"
+#include "vaultsession.h"
+#include "vaultstate.h"
+#include "ipcserver.h"
+
+static IPCServer *ipc = nullptr;
+
 
 LoginWindow::LoginWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -31,6 +37,10 @@ LoginWindow::LoginWindow(QWidget *parent)
     if (!Database::initialize()) {
         QMessageBox::critical(this, "Database Error",
                               "Failed to initialize database.");
+    }
+    if (!ipc) {
+        ipc = new IPCServer(this);
+        ipc->start();
     }
 
     connect(ui->loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
@@ -68,7 +78,6 @@ bool LoginWindow::validateUsername(const QString &username)
     }
     return true;
 }
-
 bool LoginWindow::validatePassword(const QString &password)
 {
     // Length check
@@ -104,41 +113,69 @@ bool LoginWindow::validatePassword(const QString &password)
     return true;
 }
 
+
 // ------------------------- AUTHENTICATION -------------------------
 
-QByteArray LoginWindow::authenticateUser(const QString &username, const QString &password)
+QByteArray LoginWindow::authenticateUser(const QString &username,
+                                         const QString &password)
 {
     QSqlQuery query(QSqlDatabase::database("lockbox_connection"));
 
-    query.prepare("SELECT salt, verification_ciphertext FROM users WHERE username = :username");
+
+    query.prepare(
+        "SELECT salt, verification_ciphertext, encrypted_dek "
+        "FROM users WHERE username = :username"
+        );
     query.bindValue(":username", username);
 
+
     if (!query.exec()) {
-        qDebug() << "Query error:" << query.lastError().text();
-        return QByteArray();
+        qDebug() << "❌ SQL ERROR";
+        qDebug() << "Query:" << query.lastQuery();
+        qDebug() << "Bound values:" << query.boundValues();
+        qDebug() << "Error:" << query.lastError().text();
     }
+
 
     if (!query.next()) {
         return QByteArray();
     }
 
-    QByteArray storedSalt = query.value(0).toByteArray();
+    QByteArray storedSalt        = query.value(0).toByteArray();
     QByteArray storedCiphertext = query.value(1).toByteArray();
+    QByteArray encryptedDEK     = query.value(2).toByteArray();
 
-    if (Crypto::verifyMasterPassword(password, storedSalt, storedCiphertext)) {
-        QByteArray derivedKey = Crypto::deriveKey(password, storedSalt);
-
-        if (!derivedKey.isEmpty()) {
-            QSqlQuery update(QSqlDatabase::database("lockbox_connection"));
-            update.prepare("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE username = :username");
-            update.bindValue(":username", username);
-            update.exec();
-
-            return derivedKey;
-        }
+    if (!Crypto::verifyMasterPassword(password, storedSalt, storedCiphertext)) {
+        return QByteArray();
     }
 
-    return QByteArray();
+
+    QByteArray kek = Crypto::deriveKey(password, storedSalt);
+    if (kek.isEmpty()) {
+        return QByteArray();
+    }
+
+
+    QByteArray dek = Crypto::decryptDEK(encryptedDEK, kek);
+
+
+    kek.fill(0);
+
+    if (dek.isEmpty()) {
+        qDebug() << "Failed to decrypt DEK";
+        return QByteArray();
+    }
+
+
+    QSqlQuery update(QSqlDatabase::database("lockbox_connection"));
+    update.prepare(
+        "UPDATE users SET last_login = CURRENT_TIMESTAMP "
+        "WHERE username = :username"
+        );
+    update.bindValue(":username", username);
+    update.exec();
+
+    return dek;
 }
 
 // ------------------------- REGISTRATION -------------------------
@@ -148,22 +185,47 @@ bool LoginWindow::registerUser(const QString &username, const QString &password)
     if (!validateUsername(username) || !validatePassword(password))
         return false;
 
-    QByteArray salt;
-    QByteArray verificationCiphertext;
 
-    QByteArray derivedKey = Crypto::registerNewUser(password, salt, verificationCiphertext);
+    QByteArray salt(crypto_pwhash_SALTBYTES, 0);
+    randombytes_buf(salt.data(), salt.size());
 
-    if (derivedKey.isEmpty() || salt.isEmpty() || verificationCiphertext.isEmpty()) {
-        QMessageBox::critical(this, "Error", "Failed to perform cryptographic setup. Please try again.");
+
+    QByteArray kek = Crypto::deriveKey(password, salt);
+    if (kek.isEmpty()) {
+        QMessageBox::critical(this, "Error", "Failed to derive encryption key.");
         return false;
     }
 
+    QByteArray dek = Crypto::generateDEK();
+
+
+    QByteArray encryptedDEK = Crypto::encryptDEK(dek, kek);
+
+
+    QByteArray verificationCiphertext =
+        Crypto::encrypt("MASTER_PASSWORD_VERIFIED", kek);
+
+
+    dek.fill(0);
+    kek.fill(0);
+
+    if (salt.isEmpty() || encryptedDEK.isEmpty() || verificationCiphertext.isEmpty()) {
+        QMessageBox::critical(this, "Error",
+                              "Failed to perform cryptographic setup. Please try again.");
+        return false;
+    }
+
+
     QSqlQuery query(QSqlDatabase::database("lockbox_connection"));
-    query.prepare("INSERT INTO users (username, salt, verification_ciphertext, created_at) "
-                  "VALUES (:username, :salt, :ciphertext, CURRENT_TIMESTAMP)");
+    query.prepare(
+        "INSERT INTO users (username, salt, verification_ciphertext, encrypted_dek, created_at) "
+        "VALUES (:username, :salt, :ciphertext, :encrypted_dek, CURRENT_TIMESTAMP)"
+        );
+
     query.bindValue(":username", username);
     query.bindValue(":salt", salt);
     query.bindValue(":ciphertext", verificationCiphertext);
+    query.bindValue(":encrypted_dek", encryptedDEK);
 
     if (!query.exec()) {
         QString err = query.lastError().text();
@@ -189,17 +251,20 @@ bool LoginWindow::registerUser(const QString &username, const QString &password)
     return true;
 }
 
+
 // ------------------------- PASSWORD RESET -------------------------
 
 bool LoginWindow::resetPassword(const QString &username, const QString &newPassword)
 {
-    // Validate new password
+
     if (!validatePassword(newPassword))
         return false;
 
-    // Fetch old salt + old verification ciphertext
     QSqlQuery q(QSqlDatabase::database("lockbox_connection"));
-    q.prepare("SELECT salt, verification_ciphertext FROM users WHERE username = :u");
+    q.prepare(
+        "SELECT salt, verification_ciphertext, encrypted_dek "
+        "FROM users WHERE username = :u"
+        );
     q.bindValue(":u", username);
 
     if (!q.exec() || !q.next()) {
@@ -207,97 +272,95 @@ bool LoginWindow::resetPassword(const QString &username, const QString &newPassw
         return false;
     }
 
-    QByteArray oldSalt  = q.value(0).toByteArray();
-    QByteArray oldCipher = q.value(1).toByteArray();
+    QByteArray oldSalt        = q.value(0).toByteArray();
+    QByteArray oldCipher      = q.value(1).toByteArray();
+    QByteArray encryptedDEK   = q.value(2).toByteArray();
 
-    // Ask for old password
-    QString oldPassword = QInputDialog::getText(this, "Verify Old Password",
-                                                "Enter CURRENT master password:",
-                                                QLineEdit::Password);
+
+    QString oldPassword = QInputDialog::getText(
+        this,
+        "Verify Old Password",
+        "Enter CURRENT master password:",
+        QLineEdit::Password
+        );
+
     if (oldPassword.isEmpty())
         return false;
+
 
     if (!Crypto::verifyMasterPassword(oldPassword, oldSalt, oldCipher)) {
         QMessageBox::warning(this, "Incorrect Password", "Current password is wrong.");
         return false;
     }
 
-    // Derive old key
-    QByteArray oldKey = Crypto::deriveKey(oldPassword, oldSalt);
-    if (oldKey.isEmpty()) {
-        QMessageBox::critical(this, "Error", "Failed to derive old key.");
+
+    QByteArray oldKEK = Crypto::deriveKey(oldPassword, oldSalt);
+    if (oldKEK.isEmpty()) {
+        QMessageBox::critical(this, "Error", "Failed to derive old encryption key.");
         return false;
     }
 
-    // Fetch full vault contents
-    QList<QVariantMap> vault = Database::getFullVault(username);
+    QByteArray dek = Crypto::decryptDEK(encryptedDEK, oldKEK);
+    oldKEK.fill(0); // 🔥 wipe ASAP
 
-    // Prepare container for decrypted entries
-    struct PlainEntry {
-        int id;
-        QString site;
-        QString user;
-        QString pass;
-    };
-
-    QList<PlainEntry> plainList;
-
-    for (auto &row : vault) {
-        int id = row["id"].toInt();
-        QString site = QString::fromUtf8(row["site"].toByteArray());
-        QString user = Crypto::decrypt(row["username"].toByteArray(), oldKey);
-        QString pass = Crypto::decrypt(row["password"].toByteArray(), oldKey);
-
-        if (user.isEmpty() && !row["username"].toByteArray().isEmpty()) {
-            QMessageBox::critical(this, "Decryption Error",
-                                  "Failed to decrypt your vault using the old password key.\n"
-                                  "Abort to prevent data loss.");
-            return false;
-        }
-
-        plainList.append({ id, site, user, pass });
-    }
-
-    // Generate new salt + new verification cipher + new key
-    QByteArray newSalt, newVerificationCipher;
-    QByteArray newKey = Crypto::registerNewUser(newPassword, newSalt, newVerificationCipher);
-
-    if (newKey.isEmpty()) {
-        QMessageBox::critical(this, "Error", "Failed to generate new master key.");
+    if (dek.isEmpty()) {
+        QMessageBox::critical(this, "Error",
+                              "Failed to unlock vault key.\n"
+                              "Password reset aborted to prevent data loss.");
         return false;
     }
 
-    // Re-encrypt entire vault with new key
-    for (auto &entry : plainList) {
-        QByteArray newUserCipher = Crypto::encrypt(entry.user, newKey);
-        QByteArray newPassCipher = Crypto::encrypt(entry.pass, newKey);
 
-        if (!Database::updateVaultRow(username, entry.id, newUserCipher, newPassCipher)) {
-            QMessageBox::critical(this, "Error", "Failed to update encrypted entry in DB.");
-            return false;
-        }
+    QByteArray newSalt(crypto_pwhash_SALTBYTES, 0);
+    randombytes_buf(newSalt.data(), newSalt.size());
+
+    QByteArray newKEK = Crypto::deriveKey(newPassword, newSalt);
+    if (newKEK.isEmpty()) {
+        dek.fill(0);
+        QMessageBox::critical(this, "Error", "Failed to derive new encryption key.");
+        return false;
     }
 
-    // Update salt + verification ciphertext
+
+    QByteArray newEncryptedDEK = Crypto::encryptDEK(dek, newKEK);
+
+
+    QByteArray newVerificationCipher =
+        Crypto::encrypt("MASTER_PASSWORD_VERIFIED", newKEK);
+
+
+    dek.fill(0);
+    newKEK.fill(0);
+
     QSqlQuery upd(QSqlDatabase::database("lockbox_connection"));
-    upd.prepare("UPDATE users SET salt = :s, verification_ciphertext = :v WHERE username = :u");
+    upd.prepare(
+        "UPDATE users "
+        "SET salt = :s, "
+        "    verification_ciphertext = :v, "
+        "    encrypted_dek = :e "
+        "WHERE username = :u"
+        );
+
     upd.bindValue(":s", newSalt);
     upd.bindValue(":v", newVerificationCipher);
+    upd.bindValue(":e", newEncryptedDEK);
     upd.bindValue(":u", username);
 
     if (!upd.exec()) {
         QMessageBox::critical(this, "Database Error",
-                              "Failed to update new password hash.");
+                              "Failed to update master password.");
         return false;
     }
 
-    QMessageBox::information(this, "Success",
-                             "Your master password has been safely updated.\n"
-                             "All vault items were re-encrypted securely.");
+    QMessageBox::information(
+        this,
+        "Success",
+        "Your master password has been updated successfully.\n"
+        "No vault data was re-encrypted."
+        );
 
     return true;
 }
-
 
 // ------------------------- BUTTON HANDLERS -------------------------
 
@@ -317,11 +380,13 @@ void LoginWindow::onLoginClicked()
     if (!derivedKey.isEmpty()) {
         QMessageBox::information(this, "Login Successful", "Welcome back, " + username + "!");
         this->hide();
-
-        // ✅ Pass username as well
+         VaultState::setUnlocked(true);  // vault unlocked
+        VaultSession::setSession(username, derivedKey); 
+        // Pass username as well
         MainWindow *mainWindow = new MainWindow(derivedKey, username);
         mainWindow->setAttribute(Qt::WA_DeleteOnClose);
         mainWindow->show();
+
 
         // restart auto-lock after login
         autoLockManager->resetTimer();
@@ -366,6 +431,8 @@ void LoginWindow::onShowPasswordToggled(bool checked)
 void LoginWindow::handleAutoLock()
 {
     qDebug() << "[AutoLock] Timeout triggered — returning to login screen.";
+    VaultSession::clear();
+    VaultState::setUnlocked(false);  // 🔒 Mark vault as locked (auto-lock)
 
     // Close all top-level windows except the login page
     for (QWidget *w : QApplication::topLevelWidgets()) {
