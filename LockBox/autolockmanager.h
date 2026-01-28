@@ -26,7 +26,7 @@ protected:
 
 private:
     QTimer *m_timer;
-    int m_timeoutMs;
+    qint64 m_timeoutMs;
 };
 
 #endif // AUTOLOCKMANAGER_H

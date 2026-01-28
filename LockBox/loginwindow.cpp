@@ -22,7 +22,7 @@ static IPCServer *ipc = nullptr;
 LoginWindow::LoginWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::LoginWindow),
-    autoLockManager(new AutoLockManager(this, 30000))
+    autoLockManager(new AutoLockManager(this))
 {
     ui->setupUi(this);
     setWindowTitle("LockBox - Secure Login");
@@ -301,7 +301,7 @@ bool LoginWindow::resetPassword(const QString &username, const QString &newPassw
     }
 
     QByteArray dek = Crypto::decryptDEK(encryptedDEK, oldKEK);
-    oldKEK.fill(0); // 🔥 wipe ASAP
+    oldKEK.fill(0); 
 
     if (dek.isEmpty()) {
         QMessageBox::critical(this, "Error",
@@ -380,8 +380,8 @@ void LoginWindow::onLoginClicked()
     if (!derivedKey.isEmpty()) {
         QMessageBox::information(this, "Login Successful", "Welcome back, " + username + "!");
         this->hide();
-         VaultState::setUnlocked(true);  // vault unlocked
-        VaultSession::setSession(username, derivedKey); 
+        VaultState::setUnlocked(true);  // vault unlocked
+        VaultSession::setSession(username, derivedKey);
         // Pass username as well
         MainWindow *mainWindow = new MainWindow(derivedKey, username);
         mainWindow->setAttribute(Qt::WA_DeleteOnClose);

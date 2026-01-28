@@ -16,7 +16,6 @@ public:
 
 signals:
     void resultReady(bool pwned, int count);
-    void loginSuccessful(const QByteArray &dataKey);
 
 private slots:
     void onReplyFinished(QNetworkReply *reply);

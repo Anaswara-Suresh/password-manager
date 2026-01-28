@@ -35,13 +35,12 @@ bool AutoLockManager::eventFilter(QObject *obj, QEvent *event)
 
 void AutoLockManager::resetTimer()
 {
-    if (m_timer->isActive())
-        m_timer->start(m_timeoutMs); // restart countdown
+    m_timer->start(m_timeoutMs);
 }
 
 void AutoLockManager::start()
 {
-    m_timer->start();
+    m_timer->start(m_timeoutMs);
 }
 
 void AutoLockManager::stop()
