@@ -22,9 +22,9 @@
 
 PasswordList::PasswordList(const QByteArray &key, const QString &username, QWidget *parent)
     : QWidget(parent),
-      ui(new Ui::PasswordList),
-      masterKey(key),
-      currentUsername(username)
+    ui(new Ui::PasswordList),
+    masterKey(key),
+    currentUsername(username)
 {
     ui->setupUi(this);
     ui->verticalLayout->setContentsMargins(15, 15, 15, 15);
@@ -82,7 +82,7 @@ void PasswordList::loadPasswords(const QString &filter)
         pwItem->setData(Qt::UserRole, pass);
         ui->tableWidget->setItem(row, 3, pwItem);
 
-      
+
         QWidget *actionWidget = new QWidget(this);
         QHBoxLayout *layout = new QHBoxLayout(actionWidget);
         layout->setContentsMargins(0, 0, 0, 0);
@@ -103,7 +103,7 @@ void PasswordList::loadPasswords(const QString &filter)
 
         menu->addSeparator();
 
-        
+
         if (!totpEnabled) {
             QAction *enableTotp = menu->addAction("🔐 Enable TOTP");
             connect(enableTotp, &QAction::triggered, this, [=]() {
@@ -152,6 +152,7 @@ void PasswordList::loadPasswords(const QString &filter)
 
         QAction *edit = menu->addAction("✏️ Edit");
         edit->setProperty("entryId", id);
+        edit->setProperty("entrySite", site);
         connect(edit, &QAction::triggered, this, &PasswordList::onEditButtonClicked);
 
         QAction *del = menu->addAction("🗑️ Delete");
@@ -189,13 +190,15 @@ void PasswordList::onEditButtonClicked()
     if (!action) return;
 
     int id = action->property("entryId").toInt();
+    QString site = action->property("entrySite").toString();
+
     QString tableName = QString("passwords_%1").arg(currentUsername);
     tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
 
     QSqlQuery query(QSqlDatabase::database("lockbox_connection"));
     query.prepare(QString(
-        "SELECT site, username, password FROM %1 WHERE id = :id"
-    ).arg(tableName));
+                      "SELECT site, username, password FROM %1 WHERE id = :id"
+                      ).arg(tableName));
     query.bindValue(":id", id);
 
     if (!query.exec() || !query.next()) {
@@ -225,6 +228,34 @@ void PasswordList::onEditButtonClicked()
         QLineEdit::Normal, passPlain, &ok);
     if (!ok) return;
 
+    // === PASSWORD HISTORY CHECK ===
+    QList<QByteArray> history = Database::getPasswordHistory(currentUsername, sitePlain, 5);
+
+    bool isReused = false;
+    for (const QByteArray &historicalEncrypted : history) {
+        QString historicalPlain = Crypto::decrypt(historicalEncrypted, masterKey);
+        if (historicalPlain == newPass) {
+            isReused = true;
+            break;
+        }
+    }
+
+    if (isReused) {
+        QMessageBox::StandardButton reply = QMessageBox::warning(
+            this,
+            "Password Reuse Warning",
+            "⚠️ This password was previously used for this site.\n\n"
+            "Reusing passwords is a security risk. Are you sure you want to continue?",
+            QMessageBox::Yes | QMessageBox::No,
+            QMessageBox::No
+            );
+
+        if (reply != QMessageBox::Yes) {
+            updateStatus("Password update cancelled - reused password");
+            return;
+        }
+    }
+
     QByteArray siteBytes = newSite.toUtf8();
     QByteArray userCipher = Crypto::encrypt(newUser, masterKey);
     QByteArray passCipher = Crypto::encrypt(newPass, masterKey);
@@ -233,6 +264,7 @@ void PasswordList::onEditButtonClicked()
             currentUsername, id, siteBytes, userCipher, passCipher)) {
         QMessageBox::information(this, "Updated", "Entry updated successfully!");
         loadPasswords();
+        updateStatus("Password updated");
     } else {
         QMessageBox::critical(this, "Error", "Failed to update entry.");
     }
@@ -249,6 +281,7 @@ void PasswordList::onDeleteButtonClicked()
         == QMessageBox::Yes) {
         Database::deletePassword(currentUsername, id);
         loadPasswords();
+        updateStatus("Entry deleted");
     }
 }
 
@@ -384,7 +417,7 @@ void PasswordList::on_btnImportVault_clicked()
         return;
     }
 
-    loadPasswords();  // reload table
+    loadPasswords();
     ui->statusLabel->setText("Vault imported successfully");
 }
 

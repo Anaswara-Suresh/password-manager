@@ -66,7 +66,8 @@ void AddPasswordPage::on_addButton_clicked()
         QMessageBox::warning(this, "Error", "All fields are required!");
         return;
     }
-    // === PASSWORD REUSE CHECK ===
+
+    // === PASSWORD REUSE CHECK (Global) ===
     QList<QByteArray> encryptedList = Database::getAllEncryptedPasswords(m_currentUsername);
 
     bool reused = false;
@@ -81,7 +82,6 @@ void AddPasswordPage::on_addButton_clicked()
     if (reused) {
         QMessageBox::warning(this, "Password Reuse Detected",
                              "Warning: This password is already used in another entry!");
-
     }
 
     // === Unique entry hash ===

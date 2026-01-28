@@ -31,6 +31,7 @@ private slots:
     void onPasswordCellClicked(int row, int column);
     void on_btnExportVault_clicked();
     void on_btnImportVault_clicked();
+
 signals:
     void copyRequested(const QString &password);
 

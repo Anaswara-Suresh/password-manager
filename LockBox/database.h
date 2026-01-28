@@ -65,6 +65,17 @@ public:
     static bool beginTransaction();
     static void commit();
     static void rollback();
+
+    /* -------- Password History -------- */
+    static bool addPasswordHistory(const QString &username,
+                                   const QString &site,
+                                   const QByteArray &passwordCipher);
+
+    static QList<QByteArray> getPasswordHistory(const QString &username,
+                                                const QString &site,
+                                                int limit = 5);
+
+    static bool createPasswordHistoryTable(const QString &username);
 };
 
 #endif // DATABASE_H

@@ -67,7 +67,85 @@ bool Database::createUserPasswordTable(const QString &username)
         return false;
     }
 
+    // Also create password history table
+    createPasswordHistoryTable(username);
+
     return true;
+}
+
+bool Database::createPasswordHistoryTable(const QString &username)
+{
+    QString tableName = QString("password_history_%1").arg(username);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+    QString createTable = QString(R"(
+        CREATE TABLE IF NOT EXISTS %1 (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            site TEXT NOT NULL,
+            password BLOB NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    )").arg(tableName);
+
+    QSqlQuery query(m_db);
+    if (!query.exec(createTable)) {
+        qDebug() << "Failed to create password history table" << tableName << ":" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+bool Database::addPasswordHistory(const QString &username,
+                                  const QString &site,
+                                  const QByteArray &passwordCipher)
+{
+    QString tableName = QString("password_history_%1").arg(username);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+    QSqlQuery query(m_db);
+    query.prepare(QString(
+                      "INSERT INTO %1 (site, password) VALUES (?, ?)"
+                      ).arg(tableName));
+
+    query.addBindValue(site);
+    query.addBindValue(passwordCipher);
+
+    if (!query.exec()) {
+        qDebug() << "Failed to add password history:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+QList<QByteArray> Database::getPasswordHistory(const QString &username,
+                                               const QString &site,
+                                               int limit)
+{
+    QList<QByteArray> history;
+
+    QString tableName = QString("password_history_%1").arg(username);
+    tableName.replace(QRegularExpression("[^a-zA-Z0-9_]"), "_");
+
+    QSqlQuery query(m_db);
+    query.prepare(QString(
+                      "SELECT password FROM %1 WHERE site = ? ORDER BY created_at DESC LIMIT ?"
+                      ).arg(tableName));
+
+    query.addBindValue(site);
+    query.addBindValue(limit);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch password history:" << query.lastError().text();
+        return history;
+    }
+
+    while (query.next()) {
+        history.append(query.value(0).toByteArray());
+    }
+
+    return history;
 }
 
 QList<QByteArray> Database::getAllEncryptedPasswords(const QString &owner)
@@ -116,6 +194,9 @@ bool Database::addPassword(const QString &username,
         qDebug() << "Insert failed:" << query.lastError().text();
         return false;
     }
+
+    // Add to password history
+    addPasswordHistory(username, site, passCipher);
 
     return true;
 }
@@ -202,7 +283,14 @@ bool Database::updatePassword(const QString &username,
     query.addBindValue(pass);
     query.addBindValue(id);
 
-    return query.exec();
+    bool success = query.exec();
+
+    // Add to password history if update succeeded
+    if (success) {
+        addPasswordHistory(username, site, pass);
+    }
+
+    return success;
 }
 
 bool Database::updateTOTP(const QString &username,
