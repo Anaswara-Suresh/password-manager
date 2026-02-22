@@ -15,8 +15,10 @@
 #include "vaultsession.h"
 #include "vaultstate.h"
 #include "ipcserver.h"
+#include "browserbridge/websocketserver.h"
 
 static IPCServer *ipc = nullptr;
+static WebSocketServer *ws = nullptr;
 
 
 LoginWindow::LoginWindow(QWidget *parent)
@@ -42,6 +44,10 @@ LoginWindow::LoginWindow(QWidget *parent)
         ipc = new IPCServer(this);
         ipc->start();
     }
+    if (!ws) {
+    ws = new WebSocketServer(this);
+    ws->start();
+}
 
     connect(ui->loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
     connect(ui->registerButton, &QPushButton::clicked, this, &LoginWindow::onRegisterClicked);

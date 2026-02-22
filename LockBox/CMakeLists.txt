@@ -7,8 +7,12 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql Network)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql Network)
+# ---------------- Qt ----------------
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql Network WebSockets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql Network WebSockets)
+
+# ---------------- OpenSSL ----------------
+find_package(OpenSSL REQUIRED)
 
 # ---- Source files ----
 set(SOURCE_FILES
@@ -30,6 +34,10 @@ set(SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/vault_importer.cpp"
     "${CMAKE_SOURCE_DIR}/totp.cpp"
     "${CMAKE_SOURCE_DIR}/totpdialog.cpp"
+    "${CMAKE_SOURCE_DIR}/browserbridge/websocketserver.cpp"
+    "${CMAKE_SOURCE_DIR}/browserbridge/pairingmanager.cpp"
+    "${CMAKE_SOURCE_DIR}/browserbridge/clientsession.cpp"
+    "${CMAKE_SOURCE_DIR}/browserbridge/aesgcm.cpp"
 )
 
 # ---- Header files ----
@@ -47,8 +55,10 @@ set(HEADER_FILES
     "${CMAKE_SOURCE_DIR}/vault_importer.h"
     "${CMAKE_SOURCE_DIR}/totp.h"
     "${CMAKE_SOURCE_DIR}/totpdialog.h"
-
-
+    "${CMAKE_SOURCE_DIR}/browserbridge/websocketserver.h"
+    "${CMAKE_SOURCE_DIR}/browserbridge/pairingmanager.h"
+    "${CMAKE_SOURCE_DIR}/browserbridge/clientsession.h"
+    "${CMAKE_SOURCE_DIR}/browserbridge/aesgcm.h"
 )
 
 # ---- UI files ----
@@ -67,64 +77,53 @@ qt_add_executable(LockBox
     ${UI_FILES}
 )
 
-# ---- Platform-specific libsodium ----
+# ---------------- libsodium ----------------
 if(WIN32)
-    # Windows setup
     set(SODIUM_ROOT "C:/libsodium/libsodium-win64")
     set(SODIUM_INCLUDE_DIR "${SODIUM_ROOT}/include")
     set(SODIUM_LIB_DIR "${SODIUM_ROOT}/lib")
 
-    message(STATUS "Linking libsodium from ${SODIUM_ROOT}")
-
     target_include_directories(LockBox PRIVATE ${SODIUM_INCLUDE_DIR})
     target_link_directories(LockBox PRIVATE ${SODIUM_LIB_DIR})
-    target_link_libraries(LockBox PRIVATE libsodium Qt6::Network)
+    target_link_libraries(LockBox PRIVATE libsodium)
 
 elseif(APPLE)
-    # macOS setup (Homebrew)
     find_path(SODIUM_INCLUDE_DIR sodium.h PATHS /opt/homebrew/include /usr/local/include)
     find_library(SODIUM_LIBRARY sodium PATHS /opt/homebrew/lib /usr/local/lib)
 
     if(SODIUM_INCLUDE_DIR AND SODIUM_LIBRARY)
-        message(STATUS "Found libsodium on macOS:")
-        message(STATUS "  Include: ${SODIUM_INCLUDE_DIR}")
-        message(STATUS "  Library: ${SODIUM_LIBRARY}")
-
         target_include_directories(LockBox PRIVATE ${SODIUM_INCLUDE_DIR})
-        target_link_libraries(LockBox PRIVATE
-            ${SODIUM_LIBRARY}
-            Qt${QT_VERSION_MAJOR}::Network
-        )
+        target_link_libraries(LockBox PRIVATE ${SODIUM_LIBRARY})
     else()
-        message(FATAL_ERROR "libsodium not found on macOS. Please install via Homebrew: brew install libsodium")
+        message(FATAL_ERROR "libsodium not found. Install with: brew install libsodium")
     endif()
 endif()
 
-
-# ---- Include project headers ----
+# ---------------- Include headers ----------------
 target_include_directories(LockBox PRIVATE "${CMAKE_SOURCE_DIR}")
 
-# ---- Link Qt libraries ----
+# ---------------- Link libraries ----------------
 target_link_libraries(LockBox PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Sql
+    Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::WebSockets
+    OpenSSL::Crypto
 )
 
-# ---- Platform properties ----
+# ---------------- Platform properties ----------------
 set_target_properties(LockBox PROPERTIES
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
+
 configure_file(${CMAKE_SOURCE_DIR}/LockBox_Logo.png LockBox_Logo.png COPYONLY)
 
-
-# ---- Finalize for Qt6 ----
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(LockBox)
 endif()
 
-# Native Messaging Host (Browser Integration)
-
+# ---------------- Native Messaging Host ----------------
 add_executable(lockbox_native_host
     "${CMAKE_SOURCE_DIR}/nativehost/main.cpp"
     "${CMAKE_SOURCE_DIR}/vaultstate.cpp"

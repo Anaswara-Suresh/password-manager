@@ -86,6 +86,8 @@ function tryFill(entry, retries = 3) {
  * Listen for background messages
  */
 chrome.runtime.onMessage.addListener((msg) => {
+  console.log("CONTENT GOT MESSAGE:", msg);
+
   if (msg?.type === "lockboxFill" && msg.entry) {
     console.log("LockBox filling:", msg.entry.username);
     tryFill(msg.entry);
