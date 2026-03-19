@@ -1,14 +1,20 @@
 #include "utils.h"
 #include <QRandomGenerator>
 #include <QRegularExpression>
+#include <sodium.h>
+
+
 
 QString Utils::generatePassword(int length) {
     const QString chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=";
     QString password;
+    password.reserve(length);
+
     for (int i = 0; i < length; ++i) {
-        int index = QRandomGenerator::global()->bounded(chars.length());
+        uint32_t index = randombytes_uniform(chars.length());
         password.append(chars.at(index));
     }
+
     return password;
 }
 
