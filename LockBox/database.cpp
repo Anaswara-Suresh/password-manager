@@ -67,7 +67,7 @@ bool Database::createUserPasswordTable(const QString &username)
         return false;
     }
 
-    // Also create password history table
+    // create password history table
     createPasswordHistoryTable(username);
 
     return true;
