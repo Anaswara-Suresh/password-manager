@@ -16,6 +16,11 @@
 #include "vaultstate.h"
 #include "ipcserver.h"
 #include "browserbridge/websocketserver.h"
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QDialogButtonBox>
 
 static IPCServer *ipc = nullptr;
 static WebSocketServer *ws = nullptr;
@@ -411,6 +416,45 @@ void LoginWindow::onRegisterClicked()
         QMessageBox::warning(this, "Registration Failed", "Please fill in all fields.");
         return;
     }
+
+    // ── Confirm password dialog ──────────────────────────────────────────
+    QDialog confirmDlg(this);
+    confirmDlg.setWindowTitle("Confirm Password");
+    confirmDlg.setFixedSize(300, 140);
+
+    QVBoxLayout *layout = new QVBoxLayout(&confirmDlg);
+    layout->setContentsMargins(20, 16, 20, 16);
+    layout->setSpacing(10);
+
+    QLabel *label = new QLabel("Re-enter your master password:", &confirmDlg);
+    layout->addWidget(label);
+
+    QLineEdit *confirmEdit = new QLineEdit(&confirmDlg);
+    confirmEdit->setEchoMode(QLineEdit::Password);
+    confirmEdit->setPlaceholderText("Confirm password");
+    confirmEdit->setFixedHeight(30);
+    layout->addWidget(confirmEdit);
+
+    QDialogButtonBox *buttons = new QDialogButtonBox(
+        QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+        Qt::Horizontal, &confirmDlg);
+    layout->addWidget(buttons);
+
+    connect(buttons, &QDialogButtonBox::accepted, &confirmDlg, &QDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, &confirmDlg, &QDialog::reject);
+
+    // Allow pressing Enter in the field to confirm
+    connect(confirmEdit, &QLineEdit::returnPressed, &confirmDlg, &QDialog::accept);
+
+    if (confirmDlg.exec() != QDialog::Accepted)
+        return;
+
+    if (confirmEdit->text() != password) {
+        QMessageBox::warning(this, "Password Mismatch",
+                             "The passwords you entered do not match.\nPlease try again.");
+        return;
+    }
+    // ────────────────────────────────────────────────────────────────────
 
     registerUser(username, password);
 }
